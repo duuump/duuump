@@ -7,3 +7,8 @@
 
 # Logi
 *.log
+
+# Sekrety - NIGDY nie commitować!
+.env
+.env.local
+*.secret
