@@ -12,3 +12,8 @@
 .env
 .env.local
 *.secret
+
+# Node.js (panel admina)
+node_modules/
+admin/node_modules/
+package-lock.json

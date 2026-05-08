@@ -4,34 +4,41 @@ Prosta strona z inspiracjami w stylu FFFFound.
 
 🌐 **Live:** <https://duuump.github.io/duuump/>
 
-## Dodawanie nowej inspiracji (jedna komenda)
+## Dodawanie nowej inspiracji
 
-Z dowolnego folderu w terminalu:
+Masz **dwie opcje** — wybierz, która Ci wygodniejsza:
+
+### Opcja 1: Panel admina (drag & drop)
+
+```bash
+duuump-admin
+```
+
+Otworzy panel w przeglądarce na <http://localhost:4000>:
+
+1. Przeciągnij obrazek (lub Cmd+V z schowka, lub kliknij)
+2. Wpisz podpis, autora, link
+3. Kliknij **Dodaj**
+
+Po `Ctrl+C` w terminalu serwer się zatrzyma.
+
+### Opcja 2: Komenda CLI
 
 ```bash
 duuump ~/Downloads/zdjecie.jpg "Podpis" "Autor" "https://link-autora"
 ```
 
-Wszystkie argumenty oprócz pliku są opcjonalne. Skrypt sam:
+Jedna linijka, też wszystko sam zrobi.
 
-1. Wgra obrazek na Cloudinary
-2. Doda wpis do `inspirations.json`
-3. Zacommituje i zpushuje na GitHub
+> **Pro tip:** zamiast wpisywać ścieżkę pliku, przeciągnij plik z Findera bezpośrednio do okna terminala.
+
+## Co skrypty robią pod spodem
+
+1. Wgrywają obrazek na **Cloudinary**
+2. Dodają wpis do `inspirations.json`
+3. Robią `git add` + `commit` + `push` do GitHuba
 
 Po ~1 minucie nowy wpis pojawi się na <https://duuump.github.io/duuump/>.
-
-### Pro tip: drag & drop
-
-Zamiast wpisywać ścieżkę pliku — przeciągnij plik z Findera bezpośrednio do okna terminala.
-
-### Bez aliasu (z folderu projektu)
-
-Jeśli alias nie działa, można wywołać skrypt bezpośrednio:
-
-```bash
-cd /Users/jacekrudzki/Documents/opencode/duuuump
-./add.sh ~/Downloads/zdjecie.jpg "Podpis" "Autor" "https://link"
-```
 
 ## Pierwsze uruchomienie / nowy komputer
 
@@ -48,24 +55,29 @@ cd /Users/jacekrudzki/Documents/opencode/duuuump
    cp .env.example .env
    ```
 
-   Edytuj `.env` (Cloudinary Console → Settings → API Keys).
-
-3. Zainstaluj wymagane narzędzia (jednorazowo):
+3. Zainstaluj wymagane narzędzia:
 
    ```bash
-   brew install jq gh
+   brew install jq node gh
    gh auth login
    gh auth setup-git
    ```
 
-4. Dodaj alias do `~/.zshrc`:
+4. Zainstaluj zależności panelu admina:
+
+   ```bash
+   cd admin && npm install && cd ..
+   ```
+
+5. Dodaj aliasy do `~/.zshrc`:
 
    ```bash
    echo 'alias duuump="/sciezka/do/duuump/add.sh"' >> ~/.zshrc
+   echo 'alias duuump-admin="/sciezka/do/duuump/admin.sh"' >> ~/.zshrc
    source ~/.zshrc
    ```
 
-## Manualna edycja `inspirations.json` (jeśli wolisz)
+## Manualna edycja `inspirations.json`
 
 Format:
 
@@ -92,7 +104,7 @@ git push
 
 Najnowsze (te dodane na końcu pliku JSON) wyświetlają się **u góry** strony.
 
-## Lokalne uruchomienie strony
+## Lokalne uruchomienie strony publicznej
 
 ```bash
 python3 -m http.server 8000
@@ -104,20 +116,34 @@ Otwórz <http://localhost:8000>. Zatrzymanie: `Ctrl + C`.
 
 ```
 duuuump/
-├── index.html          struktura strony
-├── style.css           wygląd
-├── app.js              wczytywanie JSON-a + lightbox
-├── inspirations.json   dane o inspiracjach
-├── add.sh              ← skrypt automatyzujący dodawanie
-├── .env                ← sekrety Cloudinary (NIE w gicie)
-├── .env.example        szablon dla .env
+├── index.html              strona publiczna
+├── style.css
+├── app.js
+├── inspirations.json       dane o inspiracjach
+├── add.sh                  CLI: dodawanie z terminala
+├── admin.sh                CLI: uruchomienie panelu admina
+├── admin/
+│   ├── server.js           backend panelu (Express)
+│   ├── admin.html          UI panelu
+│   ├── admin.css
+│   ├── admin.js
+│   └── package.json        zaleznosci panelu
+├── .env                    sekrety Cloudinary (NIE w gicie)
+├── .env.example
 ├── README.md
 └── .gitignore
 ```
 
+## Bezpieczeństwo
+
+Panel admina (`admin.sh`) nasłuchuje **tylko na localhost** (127.0.0.1).
+Nikt z internetu nie ma do niego dostępu — działa wyłącznie z Twojego Maca.
+
+Plik `.env` z kluczami Cloudinary **nigdy nie trafia na GitHub** — jest w `.gitignore`.
+
 ## Walidacja JSON-a
 
-Jeśli strona przestanie się ładować po manualnej edycji, sprawdź JSON:
+Jeśli strona przestanie się ładować po manualnej edycji:
 
 ```bash
 python3 -c "import json; json.load(open('inspirations.json')); print('OK')"
