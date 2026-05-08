@@ -1,9 +1,13 @@
 // ============================================================
-// Duuump Admin - frontend
+// Duuump Admin - frontend (CRUD inspiracji)
 // ============================================================
 
 const $ = (id) => document.getElementById(id);
+const $$ = (sel, root = document) => root.querySelector(sel);
 
+// ============================================================
+// FORM: dodawanie
+// ============================================================
 const form = $('form');
 const drop = $('drop');
 const fileInput = $('file');
@@ -19,23 +23,12 @@ const status = $('status');
 
 let selectedFile = null;
 
-// ---------- File selection ----------
 function setFile(file) {
   if (!file) return;
-
-  if (!file.type.startsWith('image/')) {
-    showStatus('error', 'To nie jest obrazek.');
-    return;
-  }
-  if (file.size > 25 * 1024 * 1024) {
-    showStatus('error', 'Plik jest większy niż 25 MB.');
-    return;
-  }
-
+  if (!file.type.startsWith('image/')) return showStatus('error', 'To nie jest obrazek.');
+  if (file.size > 25 * 1024 * 1024) return showStatus('error', 'Plik wiekszy niz 25 MB.');
   selectedFile = file;
   hideStatus();
-
-  // Preview
   const reader = new FileReader();
   reader.onload = (e) => {
     preview.src = e.target.result;
@@ -56,101 +49,64 @@ function clearFile() {
   submitBtn.disabled = true;
 }
 
-// Click to choose
-fileInput.addEventListener('change', (e) => {
-  if (e.target.files[0]) setFile(e.target.files[0]);
-});
+fileInput.addEventListener('change', (e) => e.target.files[0] && setFile(e.target.files[0]));
+removeFileBtn.addEventListener('click', (e) => { e.preventDefault(); e.stopPropagation(); clearFile(); });
 
-removeFileBtn.addEventListener('click', (e) => {
-  e.preventDefault();
-  e.stopPropagation();
-  clearFile();
-});
-
-// Drag & drop
-['dragenter', 'dragover'].forEach((ev) => {
-  drop.addEventListener(ev, (e) => {
-    e.preventDefault();
-    drop.classList.add('dragover');
-  });
-});
-['dragleave', 'drop'].forEach((ev) => {
-  drop.addEventListener(ev, (e) => {
-    e.preventDefault();
-    drop.classList.remove('dragover');
-  });
-});
-
+['dragenter', 'dragover'].forEach((ev) =>
+  drop.addEventListener(ev, (e) => { e.preventDefault(); drop.classList.add('dragover'); })
+);
+['dragleave', 'drop'].forEach((ev) =>
+  drop.addEventListener(ev, (e) => { e.preventDefault(); drop.classList.remove('dragover'); })
+);
 drop.addEventListener('drop', (e) => {
   const file = e.dataTransfer.files[0];
   if (file) setFile(file);
 });
 
-// Paste from clipboard (Cmd+V)
 document.addEventListener('paste', (e) => {
   const items = e.clipboardData?.items;
   if (!items) return;
   for (const item of items) {
     if (item.type.startsWith('image/')) {
       const file = item.getAsFile();
-      if (file) {
-        setFile(file);
-        break;
-      }
+      if (file) { setFile(file); break; }
     }
   }
 });
 
-// ---------- Status helpers ----------
 function showStatus(type, text) {
   status.className = `status ${type}`;
   status.textContent = text;
   status.hidden = false;
 }
+function hideStatus() { status.hidden = true; }
 
-function hideStatus() {
-  status.hidden = true;
-}
-
-// ---------- Submit ----------
 form.addEventListener('submit', async (e) => {
   e.preventDefault();
   if (!selectedFile) return;
 
-  // UI: loading
   submitBtn.disabled = true;
   submitLabel.hidden = true;
   submitSpinner.hidden = false;
-  showStatus('loading', 'Wgrywam obrazek i aktualizuję stronę...');
+  showStatus('loading', 'Wgrywam i aktualizuje...');
 
   try {
-    const formData = new FormData();
-    formData.append('image', selectedFile);
-    formData.append('caption', $('caption').value.trim());
-    formData.append('author', $('author').value.trim());
-    formData.append('authorUrl', $('authorUrl').value.trim());
+    const fd = new FormData();
+    fd.append('image', selectedFile);
+    fd.append('caption', $('caption').value.trim());
+    fd.append('author', $('author').value.trim());
+    fd.append('authorUrl', $('authorUrl').value.trim());
 
-    const response = await fetch('/api/add', {
-      method: 'POST',
-      body: formData,
-    });
+    const res = await fetch('/api/add', { method: 'POST', body: fd });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error || 'Nieznany blad');
 
-    const data = await response.json();
-
-    if (!response.ok) {
-      throw new Error(data.error || 'Wystąpił nieznany błąd');
-    }
-
-    showStatus(
-      'success',
-      `✓ Dodano! Strona zaktualizuje się za ~1 min: https://duuump.github.io/duuump/`
-    );
-
-    // Reset
+    showStatus('success', 'Dodano! Strona zaktualizuje sie za ~1 min.');
     form.reset();
     clearFile();
+    loadList(); // odswiez liste
   } catch (err) {
-    showStatus('error', `✗ Błąd: ${err.message}`);
+    showStatus('error', err.message);
   } finally {
     submitBtn.disabled = !selectedFile;
     submitLabel.hidden = false;
@@ -158,5 +114,230 @@ form.addEventListener('submit', async (e) => {
   }
 });
 
-// Domyślnie strona ładuje się z głównym widokiem (drop zone aktywny)
-// Submit jest disabled dopóki nie wybierzesz pliku
+// ============================================================
+// LISTA: wczytywanie + render
+// ============================================================
+const listEl = $('list');
+const listCountEl = $('listCount');
+const listStatusEl = $('listStatus');
+const itemTemplate = $('itemTemplate');
+const editTemplate = $('editTemplate');
+
+let items = []; // aktualna lista (kolejnosc wyswietlania, najnowsze pierwsze)
+
+async function loadList() {
+  listEl.innerHTML = '<li class="list-loading">Ladowanie...</li>';
+  try {
+    const res = await fetch('/api/list');
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error);
+    items = data.items;
+    renderList();
+  } catch (err) {
+    listEl.innerHTML = '';
+    listStatus('error', `Nie udalo sie wczytac listy: ${err.message}`);
+  }
+}
+
+function renderList() {
+  listEl.innerHTML = '';
+  listCountEl.textContent = `(${items.length})`;
+  if (items.length === 0) {
+    listEl.innerHTML = '<li class="list-loading">Brak wpisow</li>';
+    return;
+  }
+  for (const item of items) {
+    listEl.appendChild(renderItem(item));
+  }
+}
+
+function renderItem(item) {
+  const li = itemTemplate.content.firstElementChild.cloneNode(true);
+  li.dataset.url = item.url;
+  $$('.item-thumb', li).src = item.url;
+  $$('.item-thumb', li).alt = item.caption || '';
+  $$('.item-caption', li).textContent = item.caption || '';
+  const authorEl = $$('.item-author', li);
+  if (item.author) {
+    authorEl.textContent = item.author;
+  } else {
+    authorEl.textContent = '';
+  }
+
+  $$('.item-edit', li).addEventListener('click', () => enterEditMode(li, item));
+  $$('.item-delete', li).addEventListener('click', () => deleteItem(li, item));
+
+  attachDragHandlers(li);
+  return li;
+}
+
+function listStatus(type, text) {
+  listStatusEl.className = `status ${type}`;
+  listStatusEl.textContent = text;
+  listStatusEl.hidden = false;
+  // Auto-hide success/error po 4s
+  if (type !== 'loading') {
+    setTimeout(() => { listStatusEl.hidden = true; }, 4000);
+  }
+}
+function hideListStatus() { listStatusEl.hidden = true; }
+
+// ============================================================
+// EDIT
+// ============================================================
+function enterEditMode(li, item) {
+  const editForm = editTemplate.content.firstElementChild.cloneNode(true);
+  $$('.item-thumb', editForm).src = item.url;
+  $$('input[name="caption"]', editForm).value = item.caption || '';
+  $$('input[name="author"]', editForm).value = item.author || '';
+  $$('input[name="authorUrl"]', editForm).value = item.authorUrl || '';
+
+  editForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    await saveEdit(li, item, editForm);
+  });
+  $$('.item-cancel', editForm).addEventListener('click', () => {
+    li.replaceWith(renderItem(item));
+  });
+
+  li.replaceWith(editForm);
+  $$('input[name="caption"]', editForm).focus();
+}
+
+async function saveEdit(li, item, editForm) {
+  const payload = {
+    url: item.url,
+    caption: $$('input[name="caption"]', editForm).value,
+    author: $$('input[name="author"]', editForm).value,
+    authorUrl: $$('input[name="authorUrl"]', editForm).value,
+  };
+
+  listStatus('loading', 'Zapisuje zmiany...');
+  try {
+    const res = await fetch('/api/update', {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload),
+    });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error);
+
+    // Zaktualizuj lokalna kopie i przerysuj
+    const idx = items.findIndex((i) => i.url === item.url);
+    if (idx !== -1) items[idx] = data.entry;
+    renderList();
+    listStatus('success', 'Zapisano. Strona zaktualizuje sie za ~1 min.');
+  } catch (err) {
+    listStatus('error', `Blad: ${err.message}`);
+  }
+}
+
+// ============================================================
+// DELETE
+// ============================================================
+async function deleteItem(li, item) {
+  const desc = item.caption || item.author || 'ten wpis';
+  const confirmed = confirm(`Usunac "${desc}"?\n\nObrazek zostanie tez usuniety z Cloudinary.`);
+  if (!confirmed) return;
+
+  listStatus('loading', 'Usuwam...');
+  try {
+    const res = await fetch('/api/delete', {
+      method: 'DELETE',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ url: item.url, deleteFile: true }),
+    });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error);
+
+    items = items.filter((i) => i.url !== item.url);
+    renderList();
+    listStatus('success', 'Usunieto. Strona zaktualizuje sie za ~1 min.');
+  } catch (err) {
+    listStatus('error', `Blad: ${err.message}`);
+  }
+}
+
+// ============================================================
+// DRAG & DROP REORDER
+// ============================================================
+let draggedEl = null;
+
+function attachDragHandlers(li) {
+  li.addEventListener('dragstart', (e) => {
+    draggedEl = li;
+    li.classList.add('dragging');
+    e.dataTransfer.effectAllowed = 'move';
+    // Wymagane przez Firefox
+    e.dataTransfer.setData('text/plain', li.dataset.url);
+  });
+
+  li.addEventListener('dragend', () => {
+    li.classList.remove('dragging');
+    document.querySelectorAll('.item').forEach((el) => {
+      el.classList.remove('drag-over-top', 'drag-over-bottom');
+    });
+    draggedEl = null;
+  });
+
+  li.addEventListener('dragover', (e) => {
+    e.preventDefault();
+    if (!draggedEl || draggedEl === li) return;
+    e.dataTransfer.dropEffect = 'move';
+
+    const rect = li.getBoundingClientRect();
+    const isAbove = e.clientY < rect.top + rect.height / 2;
+    li.classList.toggle('drag-over-top', isAbove);
+    li.classList.toggle('drag-over-bottom', !isAbove);
+  });
+
+  li.addEventListener('dragleave', () => {
+    li.classList.remove('drag-over-top', 'drag-over-bottom');
+  });
+
+  li.addEventListener('drop', async (e) => {
+    e.preventDefault();
+    if (!draggedEl || draggedEl === li) return;
+
+    const rect = li.getBoundingClientRect();
+    const isAbove = e.clientY < rect.top + rect.height / 2;
+    li.classList.remove('drag-over-top', 'drag-over-bottom');
+
+    if (isAbove) listEl.insertBefore(draggedEl, li);
+    else listEl.insertBefore(draggedEl, li.nextSibling);
+
+    await persistOrder();
+  });
+}
+
+async function persistOrder() {
+  // Wyczytaj nowa kolejnosc z DOM
+  const urls = [...listEl.querySelectorAll('.item')].map((el) => el.dataset.url);
+  // Zaktualizuj lokalna kopie
+  items = urls.map((url) => items.find((i) => i.url === url)).filter(Boolean);
+
+  listStatus('loading', 'Zapisuje kolejnosc...');
+  try {
+    const res = await fetch('/api/reorder', {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ urls }),
+    });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error);
+    if (data.changed) {
+      listStatus('success', 'Kolejnosc zapisana. Strona zaktualizuje sie za ~1 min.');
+    } else {
+      hideListStatus();
+    }
+  } catch (err) {
+    listStatus('error', `Blad: ${err.message}`);
+    // Cofnij - przeladuj ze swiezego stanu serwera
+    loadList();
+  }
+}
+
+// ============================================================
+// Start
+// ============================================================
+loadList();

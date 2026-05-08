@@ -190,7 +190,191 @@ form {
 
 .status.loading::before { content: "[..] "; }
 
-/* ---------- Mobile ---------- */
+/* ============================================================
+   Sekcje panelu
+   ============================================================ */
+.panel-section {
+  max-width: 720px;
+  margin: 0 auto var(--pad-lg);
+}
+
+.section-heading {
+  font-size: 13px;
+  font-weight: 400;
+  margin: 0 0 var(--pad-sm);
+  padding-bottom: var(--pad-xs);
+  border-bottom: 1px dashed var(--fg-subtle);
+  display: flex;
+  align-items: center;
+  gap: var(--pad-xs);
+}
+
+.section-heading::before {
+  content: "## ";
+  color: var(--fg-muted);
+}
+
+.section-heading .muted {
+  font-size: 11px;
+  font-weight: 400;
+}
+
+.list-hint {
+  font-size: 11px;
+  margin: 0 0 var(--pad-sm);
+}
+
+.grip-inline {
+  font-family: var(--font-mono);
+  color: var(--fg);
+}
+
+/* ============================================================
+   Lista wpisow
+   ============================================================ */
+.list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.item {
+  display: grid;
+  grid-template-columns: 24px 64px 1fr auto;
+  align-items: center;
+  gap: var(--pad-sm);
+  padding: var(--pad-xs) 0;
+  border-top: 1px dashed var(--fg-subtle);
+}
+
+.item:last-child {
+  border-bottom: 1px dashed var(--fg-subtle);
+}
+
+.item.dragging {
+  opacity: 0.4;
+}
+
+.item.drag-over-top {
+  border-top: 2px solid var(--accent);
+}
+
+.item.drag-over-bottom {
+  border-bottom: 2px solid var(--accent);
+}
+
+.item-grip {
+  cursor: grab;
+  font-family: var(--font-mono);
+  color: var(--fg-muted);
+  font-size: 12px;
+  user-select: none;
+  text-align: center;
+}
+.item-grip:active { cursor: grabbing; }
+.item-grip:hover { color: var(--accent); }
+
+.item-thumb {
+  width: 64px;
+  height: 64px;
+  object-fit: cover;
+  background: #f6f6f6;
+  display: block;
+}
+
+.item-meta {
+  min-width: 0; /* zeby flex/grid mogl skrocic tekst ellipsis */
+}
+
+.item-caption {
+  margin: 0 0 2px;
+  font-size: 12px;
+  color: var(--fg);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.item-caption.muted-when-empty:empty::before {
+  content: "(bez podpisu)";
+  color: var(--fg-muted);
+}
+
+.item-author {
+  margin: 0;
+  font-size: 11px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.item-actions {
+  display: flex;
+  gap: var(--pad-sm);
+  align-items: center;
+}
+
+.item-actions .link-btn {
+  font-size: 11px;
+}
+
+.item-actions .item-delete:hover { color: var(--accent); }
+
+/* Tryb edycji */
+.item-edit-form {
+  display: grid;
+  grid-template-columns: 24px 64px 1fr auto;
+  align-items: start;
+  gap: var(--pad-sm);
+  padding: var(--pad-xs) 0;
+  border-top: 1px solid var(--fg);
+  border-bottom: 1px solid var(--fg);
+  margin: -1px 0;
+}
+
+.field-mini {
+  display: grid;
+  grid-template-columns: 80px 1fr;
+  align-items: center;
+  gap: var(--pad-xs);
+  margin-bottom: 4px;
+}
+.field-mini:last-child { margin-bottom: 0; }
+
+.field-mini label {
+  font-size: 11px;
+  color: var(--fg-muted);
+}
+
+.field-mini input {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  padding: 4px 8px;
+  border: 1px solid var(--fg-subtle);
+  background: var(--bg);
+  color: var(--fg);
+  border-radius: 0;
+  width: 100%;
+}
+
+.field-mini input:focus {
+  outline: none;
+  border-color: var(--accent);
+}
+
+/* Stan ladowania listy */
+.list-loading {
+  font-size: 12px;
+  color: var(--fg-muted);
+  padding: var(--pad-md) 0;
+  text-align: center;
+}
+
+/* ============================================================
+   Mobile
+   ============================================================ */
 @media (max-width: 600px) {
   .field {
     grid-template-columns: 1fr;
@@ -199,4 +383,16 @@ form {
   .field label::after {
     content: "";
   }
+  .item,
+  .item-edit-form {
+    grid-template-columns: 24px 1fr;
+    grid-template-areas:
+      "grip thumb"
+      "grip meta"
+      "grip actions";
+  }
+  .item-grip { grid-area: grip; align-self: start; padding-top: 8px; }
+  .item-thumb { grid-area: thumb; width: 100%; height: auto; max-height: 200px; }
+  .item-meta { grid-area: meta; }
+  .item-actions { grid-area: actions; }
 }

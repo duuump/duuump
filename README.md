@@ -8,17 +8,18 @@ Prosta strona z inspiracjami w stylu FFFFound.
 
 Masz **dwie opcje** — wybierz, która Ci wygodniejsza:
 
-### Opcja 1: Panel admina (drag & drop)
+### Opcja 1: Panel admina (drag & drop + edycja)
 
 ```bash
 duuump-admin
 ```
 
-Otworzy panel w przeglądarce na <http://localhost:4000>:
+Otworzy panel w przeglądarce na <http://localhost:4000>. Panel umożliwia:
 
-1. Przeciągnij obrazek (lub Cmd+V z schowka, lub kliknij)
-2. Wpisz podpis, autora, link
-3. Kliknij **Dodaj**
+- **Dodawanie** — przeciągnij obrazek (lub Cmd+V z schowka, lub kliknij), wpisz dane, klik
+- **Edycja** — `[ edytuj ]` przy wpisie zmienia podpis/autora/link
+- **Usuwanie** — `[ usun ]` usuwa wpis i plik z Cloudinary
+- **Zmiana kolejności** — przeciągnij wpis za `[::]` w nową pozycję
 
 Po `Ctrl+C` w terminalu serwer się zatrzyma.
 
