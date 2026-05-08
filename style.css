@@ -145,6 +145,44 @@
 }
 
 /* ============================================================
+   Zegar i pogoda w stopce (lewa strona)
+   ============================================================ */
+.live-info {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 11px;
+}
+
+.clock {
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0;
+}
+
+.separator {
+  color: var(--fg-subtle);
+}
+
+.weather {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.weather-icon {
+  font-size: 12px;
+  line-height: 1;
+}
+
+.weather-temp {
+  font-weight: 500;
+}
+
+.weather-loading {
+  color: var(--fg-muted);
+}
+
+/* ============================================================
    Przełącznik trybu wyświetlania w stopce
    ============================================================ */
 .view-toggle {
