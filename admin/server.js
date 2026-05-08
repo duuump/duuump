@@ -198,6 +198,84 @@ app.post('/api/add', upload.single('image'), async (req, res) => {
   }
 });
 
+// ---------- POST /api/add-from-url ----------
+// Dodaje wpis z Cloudinary URL (gdy obrazek byl wczesniej wgrany przez upload-url)
+app.post('/api/add-from-url', async (req, res) => {
+  try {
+    const { url, caption = '', author = '', authorUrl = '' } = req.body || {};
+    if (!url) return res.status(400).json({ error: 'Brak URL obrazka' });
+
+    console.log(`==> Add from URL: ${url}`);
+
+    const entry = { url };
+    if (caption) entry.caption = caption;
+    if (author) entry.author = author;
+    if (authorUrl) entry.authorUrl = authorUrl;
+
+    const data = await readInspirations();
+    data.push(entry);
+    await writeInspirations(data);
+    console.log('  ✓ JSON zaktualizowany');
+
+    const commitDesc = caption || url.split('/').pop().split('?')[0].slice(0, 30);
+    const fullMsg = author
+      ? `Add inspiration: ${commitDesc} - ${author}`
+      : `Add inspiration: ${commitDesc}`;
+    await gitCommitAndPush(fullMsg);
+    console.log('  ✓ Push');
+
+    res.json({ success: true, entry });
+  } catch (err) {
+    console.error('✗ Add-from-URL error:', err.message);
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// ---------- POST /api/upload-url ----------
+// Pobiera obrazek z podanego URL i zwraca Cloudinary URL (bez zapisywania do JSON)
+app.post('/api/upload-url', async (req, res) => {
+  let tmpPath = null;
+  try {
+    const { url } = req.body || {};
+    if (!url) return res.status(400).json({ error: 'Brak URL obrazka' });
+
+    console.log(`==> Fetch URL: ${url}`);
+
+    // Pobierz obrazek z sieci
+    const response = await fetch(url);
+    if (!response.ok) {
+      throw new Error(`Nie udalo sie pobrac obrazka: ${response.status}`);
+    }
+
+    const contentType = response.headers.get('content-type') || '';
+    if (!contentType.startsWith('image/')) {
+      throw new Error('Podany URL nie jest obrazkiem (Content-Type: ' + contentType + ')');
+    }
+
+    // Zapisz do pliku tymczasowego
+    const buffer = await response.arrayBuffer();
+    const ext = contentType.split('/')[1] || 'jpg';
+    const tmpDir = '/tmp/duuump-uploads';
+    if (!fs.existsSync(tmpDir)) fs.mkdirSync(tmpDir, { recursive: true });
+    const filename = `url-${Date.now()}.${ext}`;
+    tmpPath = join(tmpDir, filename);
+    await writeFile(tmpPath, Buffer.from(buffer));
+
+    console.log(`  ✓ Pobrano, teraz wgrywam na Cloudinary...`);
+
+    // Wgraj na Cloudinary
+    const cloudinaryUrl = await uploadToCloudinary(tmpPath);
+    console.log(`  ✓ Cloudinary: ${cloudinaryUrl}`);
+
+    res.json({ success: true, url: cloudinaryUrl });
+  } catch (err) {
+    console.error('✗ Upload URL error:', err.message);
+    res.status(500).json({ error: err.message });
+  } finally {
+    if (tmpPath && fs.existsSync(tmpPath)) unlink(tmpPath).catch(() => {});
+  }
+});
+
 // ---------- PATCH /api/update ----------
 // Body: { url: "...", caption?, author?, authorUrl? }
 // Edytuje TYLKO te pola ktore sa w body. Pomijajac url-e nie zmieniamy obrazka.

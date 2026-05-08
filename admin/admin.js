@@ -21,7 +21,14 @@ const submitLabel = document.querySelector('.submit-label');
 const submitSpinner = document.querySelector('.submit-spinner');
 const status = $('status');
 
+// URL input elements
+const urlInput = $('urlInput');
+const loadUrlBtn = $('loadUrlBtn');
+const urlStatus = $('urlStatus');
+
 let selectedFile = null;
+let urlUploadMode = false; // true = using URL instead of file
+let uploadedUrl = null;    // Cloudinary URL from URL upload
 
 function setFile(file) {
   if (!file) return;
@@ -42,12 +49,71 @@ function setFile(file) {
 
 function clearFile() {
   selectedFile = null;
+  urlUploadMode = false;
+  uploadedUrl = null;
   fileInput.value = '';
   preview.src = '';
+  urlInput.value = '';
   dropContent.hidden = false;
   previewContent.hidden = true;
   submitBtn.disabled = true;
+  hideUrlStatus();
 }
+
+// URL upload handler
+async function loadFromUrl() {
+  const url = urlInput.value.trim();
+  if (!url) return showUrlStatus('error', 'Wklej URL obrazka');
+
+  showUrlStatus('', 'Pobieranie obrazka...');
+  loadUrlBtn.disabled = true;
+
+  try {
+    const res = await fetch('/api/upload-url', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ url }),
+    });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error);
+
+    // Success - show preview with the Cloudinary URL
+    urlUploadMode = true;
+    uploadedUrl = data.url;
+    preview.src = data.url;
+    previewName.textContent = 'Z URL: ' + url.split('/').pop().split('?')[0].slice(0, 30);
+    dropContent.hidden = true;
+    previewContent.hidden = false;
+    submitBtn.disabled = false;
+    showUrlStatus('success', 'Gotowe');
+
+  } catch (err) {
+    showUrlStatus('error', err.message);
+  } finally {
+    loadUrlBtn.disabled = false;
+  }
+}
+
+function showUrlStatus(type, text) {
+  urlStatus.className = 'url-status ' + type;
+  urlStatus.textContent = text;
+  urlStatus.hidden = !text;
+}
+
+function hideUrlStatus() {
+  urlStatus.hidden = true;
+}
+
+// URL input: Enter key to submit
+urlInput.addEventListener('keydown', (e) => {
+  if (e.key === 'Enter') {
+    e.preventDefault();
+    loadFromUrl();
+  }
+});
+
+// URL button click
+loadUrlBtn.addEventListener('click', loadFromUrl);
 
 fileInput.addEventListener('change', (e) => e.target.files[0] && setFile(e.target.files[0]));
 removeFileBtn.addEventListener('click', (e) => { e.preventDefault(); e.stopPropagation(); clearFile(); });
@@ -83,22 +149,41 @@ function hideStatus() { status.hidden = true; }
 
 form.addEventListener('submit', async (e) => {
   e.preventDefault();
-  if (!selectedFile) return;
+  if (!selectedFile && !urlUploadMode) return;
 
   submitBtn.disabled = true;
   submitLabel.hidden = true;
   submitSpinner.hidden = false;
-  showStatus('loading', 'Wgrywam i aktualizuje...');
+  showStatus('loading', 'Zapisuję...');
 
   try {
-    const fd = new FormData();
-    fd.append('image', selectedFile);
-    fd.append('caption', $('caption').value.trim());
-    fd.append('author', $('author').value.trim());
-    fd.append('authorUrl', $('authorUrl').value.trim());
+    // Two try modes: file upload OR URL mode (already uploaded to Cloudinary)
+    let res, data;
 
-    const res = await fetch('/api/add', { method: 'POST', body: fd });
-    const data = await res.json();
+    if (urlUploadMode && uploadedUrl) {
+      // URL mode: just add to JSON with the Cloudinary URL we already have
+      res = await fetch('/api/add-from-url', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          url: uploadedUrl,
+          caption: $('caption').value.trim(),
+          author: $('author').value.trim(),
+          authorUrl: $('authorUrl').value.trim(),
+        }),
+      });
+      data = await res.json();
+    } else {
+      // File mode: upload file to Cloudinary and add to JSON
+      const fd = new FormData();
+      fd.append('image', selectedFile);
+      fd.append('caption', $('caption').value.trim());
+      fd.append('author', $('author').value.trim());
+      fd.append('authorUrl', $('authorUrl').value.trim());
+      res = await fetch('/api/add', { method: 'POST', body: fd });
+      data = await res.json();
+    }
+
     if (!res.ok) throw new Error(data.error || 'Nieznany blad');
 
     showStatus('success', 'Dodano! Strona zaktualizuje sie za ~1 min.');
@@ -108,7 +193,7 @@ form.addEventListener('submit', async (e) => {
   } catch (err) {
     showStatus('error', err.message);
   } finally {
-    submitBtn.disabled = !selectedFile;
+    submitBtn.disabled = !selectedFile && !urlUploadMode;
     submitLabel.hidden = false;
     submitSpinner.hidden = true;
   }

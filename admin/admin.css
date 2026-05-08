@@ -96,6 +96,65 @@ form {
 }
 .link-btn:hover { color: var(--accent); }
 
+/* ---------- URL input ---------- */
+.url-row {
+  display: flex;
+  align-items: center;
+  gap: var(--pad-sm);
+  margin-top: var(--pad-sm);
+  justify-content: center;
+}
+
+.url-label {
+  font-size: 11px;
+  color: var(--fg-muted);
+}
+
+.url-input {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  padding: 6px 10px;
+  border: 1px solid var(--fg-subtle);
+  background: var(--bg);
+  color: var(--fg);
+  width: 300px;
+  max-width: 60%;
+}
+
+.url-input:focus {
+  outline: none;
+  border-color: var(--accent);
+}
+
+.url-input::placeholder { color: var(--fg-muted); }
+
+.url-btn {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  padding: 6px 10px;
+  background: var(--bg);
+  color: var(--fg);
+  border: 1px solid var(--fg-subtle);
+  cursor: pointer;
+}
+
+.url-btn:hover {
+  border-color: var(--fg);
+}
+
+.url-btn::before { content: "[ "; }
+.url-btn::after { content: " ]"; }
+
+.url-status {
+  font-size: 11px;
+  text-align: center;
+  margin-top: 4px;
+  color: var(--fg-muted);
+}
+
+.url-status.error { color: var(--accent); }
+.url-status.success { color: var(--fg); }
+
 /* ---------- Pola tekstowe ---------- */
 .field {
   display: grid;

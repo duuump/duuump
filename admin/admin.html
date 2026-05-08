@@ -36,6 +36,13 @@
           </label>
           <input type="file" id="file" accept="image/*" hidden />
 
+          <div class="url-row">
+            <span class="url-label">lub</span>
+            <input type="url" id="urlInput" class="url-input" placeholder="wklej URL obrazka (https://...jpg)" />
+            <button type="button" id="loadUrlBtn" class="url-btn">[ pobierz ]</button>
+          </div>
+          <div id="urlStatus" class="url-status" hidden></div>
+
           <div class="field">
             <label for="caption">Podpis</label>
             <input type="text" id="caption" name="caption" placeholder="np. Burberry Winter 2025" />
