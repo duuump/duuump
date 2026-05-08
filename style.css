@@ -170,12 +170,17 @@
 }
 
 .weather-icon {
-  font-size: 12px;
-  line-height: 1;
+  font-family: var(--font-mono);
+  font-size: 11px;
 }
 
 .weather-temp {
   font-weight: 500;
+}
+
+.day-night {
+  color: var(--fg-muted);
+  margin-left: 4px;
 }
 
 .weather-loading {

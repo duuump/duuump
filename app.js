@@ -47,25 +47,39 @@ setInterval(updateClock, 1000);
 const weatherEl = document.getElementById('weather');
 const WEATHER_KRAKOW = { lat: 50.0647, lon: 19.9450 };
 
-// Mapa kodów pogody Open-Meteo na emoji
+// Mapa kodów pogody Open-Meteo na ASCII ikony
 const WEATHER_CODES = {
-  0: '☀️',   // Clear sky
-  1: '🌤️',  // Mainly clear
-  2: '⛅',   // Partly cloudy
-  3: '☁️',   // Overcast
-  45: '🌫️', // Fog
-  48: '🌫️', // Depositing rime fog
-  51: '🌧️', // Drizzle light
-  53: '🌧️', // Drizzle moderate
-  55: '🌧️', // Drizzle dense
-  61: '🌧️', // Rain slight
-  63: '🌧️', // Rain moderate
-  65: '🌧️', // Rain heavy
-  80: '🌦️', // Rain showers slight
-  81: '🌦️', // Rain showers moderate
-  82: '🌦️', // Rain showers violent
-  95: '⛈️', // Thunderstorm
+  0:  '( )',  // Clear sky - sun
+  1:  '(:)',  // Mainly clear
+  2:  '(:',   // Partly cloudy
+  3:  '[=]',  // Overcast - cloud
+  45: '~ ~',  // Fog
+  48: '~ ~',  // Fog
+  51:  '| |', // Drizzle
+  53:  '| |', // Drizzle
+  55:  '===', // Drizzle dense
+  61:  "' \"'", // Rain
+  63:  "' \"'", // Rain
+  65:  '~~~~', // Rain heavy
+  80:  "'' ', // Rain showers
+  81:  ''' ', // Rain showers
+  82:  '~~~~', // Rain showers violent
+  95:  '/!\', // Thunderstorm
 };
+
+function isNightTime() {
+  const hour = new Date().getHours();
+  // Dzień: 6:00-20:00, Noc: reszta
+  return hour < 6 || hour >= 20;
+}
+
+function getTimeOfDay() {
+  const hour = new Date().getHours();
+  if (hour >= 5 && hour < 12) return '[morning]';
+  if (hour >= 12 && hour < 17) return '[noon]';
+  if (hour >= 17 && hour < 20) return '[evening]';
+  return '[night]';
+}
 
 async function loadWeather() {
   const url = `https://api.open-meteo.com/v1/forecast?latitude=${WEATHER_KRAKOW.lat}&longitude=${WEATHER_KRAKOW.lon}&current=temperature_2m,weather_code`;
@@ -75,11 +89,13 @@ async function loadWeather() {
     const data = await res.json();
     const temp = Math.round(data.current.temperature_2m);
     const code = data.current.weather_code;
-    const icon = WEATHER_CODES[code] || '🌡️';
+    const icon = WEATHER_CODES[code] || '[?]';
 
-    weatherEl.innerHTML = `<span class="weather-icon">${icon}</span><span class="weather-temp">${temp}°</span>`;
+    const dayNight = isNightTime() ? '[night]' : getTimeOfDay();
+
+    weatherEl.innerHTML = `<span class="weather-icon">${icon}</span><span class="weather-temp">${temp}°</span><span class="day-night">${dayNight}</span>`;
   } catch (e) {
-    weatherEl.innerHTML = '<span class="weather-loading">--</span>';
+    weatherEl.innerHTML = '<span class="weather-loading">[--]</span>';
   }
 }
 
