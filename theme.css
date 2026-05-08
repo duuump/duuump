@@ -34,6 +34,10 @@ body {
   color: var(--fg);
   background: var(--bg);
   -webkit-font-smoothing: antialiased;
+  margin: 0;
+  padding: 0;
+  height: 100vh;
+  overflow: hidden; /* Zapobiega scrollowaniu całej strony */
 }
 
 a {
@@ -44,25 +48,26 @@ a {
 a:hover { color: var(--accent); }
 
 /* ============================================================
-   Layout: ramka
-   Identyczna na stronie publicznej i adminie.
+   Layout: ramka ze stałym header/footer i przewijanym body
    ============================================================ */
 .frame {
+  position: fixed;
+  inset: var(--pad-md);
   border: var(--border);
-  margin: var(--pad-md);
-  min-height: calc(100vh - 2 * var(--pad-md));
   display: flex;
   flex-direction: column;
+  background: var(--bg);
 }
 
-/* --- Nagłówek --- */
+/* --- Nagłówek (stały) --- */
 .frame-header {
+  flex-shrink: 0;
   border-bottom: var(--border);
   padding: var(--pad-sm) var(--pad-md);
   display: flex;
   align-items: center;
   gap: var(--pad-sm);
-  height: 56px;               /* stała wysokość = identyczna na obu stronach */
+  height: 56px;
 }
 
 .frame-header .logo {
@@ -72,14 +77,19 @@ a:hover { color: var(--accent); }
   flex-shrink: 0;
 }
 
-/* --- Treść --- */
+/* --- Treść (przewijana) --- */
 .frame-body {
   padding: var(--pad-md);
   flex: 1;
+  overflow-y: auto;
+  /* Scrollbar w stylu ASCII/monospace */
+  scrollbar-width: thin;
+  scrollbar-color: var(--fg-subtle) transparent;
 }
 
-/* --- Stopka --- */
+/* --- Stopka (stała) --- */
 .frame-footer {
+  flex-shrink: 0;
   border-top: var(--border);
   padding: var(--pad-xs) var(--pad-md);
   font-size: 11px;
@@ -89,7 +99,7 @@ a:hover { color: var(--accent); }
   align-items: center;
   gap: var(--pad-md);
   flex-wrap: wrap;
-  height: 36px;               /* stała wysokość = identyczna na obu stronach */
+  height: 36px;
 }
 
 .frame-footer a {
@@ -105,8 +115,7 @@ a:hover { color: var(--accent); }
 /* --- Mobile --- */
 @media (max-width: 600px) {
   .frame {
-    margin: var(--pad-sm);
-    min-height: calc(100vh - 2 * var(--pad-sm));
+    inset: var(--pad-sm);
   }
   .frame-header,
   .frame-body,
