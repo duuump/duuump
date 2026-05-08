@@ -221,6 +221,16 @@ function createCard(item) {
     li.appendChild(author);
   }
 
+  // Data dodania
+  if (item.date) {
+    const date = document.createElement('p');
+    date.className = 'card-date';
+    // Format: YYYY-MM-DD z Cloudinary timestamp
+    const dateStr = item.date.substring(0, 10);
+    date.textContent = '[' + dateStr + ']';
+    li.appendChild(date);
+  }
+
   return li;
 }
 

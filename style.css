@@ -64,6 +64,13 @@
   line-height: 1.2;
 }
 
+.card-date {
+  margin-top: 0;
+  font-size: 10px;
+  color: var(--fg-muted);
+  line-height: 1.2;
+}
+
 .card-author a {
   color: var(--fg-muted);
   text-decoration: underline;
@@ -241,7 +248,8 @@
 }
 
 .grid.mode-single .card-caption,
-.grid.mode-single .card-author {
+.grid.mode-single .card-author,
+.grid.mode-single .card-date {
   text-align: center;
   margin-top: var(--pad-xs);
   line-height: 1.2;
@@ -271,6 +279,10 @@
 .grid.mode-large .card-author {
   font-size: 12px;
   line-height: 1.1;
+}
+
+.grid.mode-large .card-date {
+  font-size: 11px;
 }
 
 /* --- Tryb 3: Małe ikony (domyślny) --- */

@@ -139,7 +139,8 @@ async function uploadToCloudinary(filePath) {
   );
   const data = await response.json();
   if (data.error) throw new Error(`Cloudinary: ${data.error.message}`);
-  return data.secure_url;
+  // Zwracamy URL i timestamp z Cloudinary
+  return { url: data.secure_url, created_at: data.created_at };
 }
 
 // ============================================================
@@ -169,10 +170,10 @@ app.post('/api/add', upload.single('image'), async (req, res) => {
     const { caption = '', author = '', authorUrl = '' } = req.body;
 
     console.log(`==> Add: ${req.file.originalname}`);
-    const url = await uploadToCloudinary(tmpPath);
-    console.log(`  ✓ Cloudinary: ${url}`);
+    const result = await uploadToCloudinary(tmpPath);
+    console.log(`  ✓ Cloudinary: ${result.url}`);
 
-    const entry = { url };
+    const entry = { url: result.url, date: result.created_at };
     if (caption) entry.caption = caption;
     if (author) entry.author = author;
     if (authorUrl) entry.authorUrl = authorUrl;
@@ -264,10 +265,10 @@ app.post('/api/upload-url', async (req, res) => {
     console.log(`  ✓ Pobrano, teraz wgrywam na Cloudinary...`);
 
     // Wgraj na Cloudinary
-    const cloudinaryUrl = await uploadToCloudinary(tmpPath);
-    console.log(`  ✓ Cloudinary: ${cloudinaryUrl}`);
+    const result = await uploadToCloudinary(tmpPath);
+    console.log(`  ✓ Cloudinary: ${result.url}`);
 
-    res.json({ success: true, url: cloudinaryUrl });
+    res.json({ success: true, url: result.url, date: result.created_at });
   } catch (err) {
     console.error('✗ Upload URL error:', err.message);
     res.status(500).json({ error: err.message });
