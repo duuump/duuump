@@ -141,13 +141,155 @@
   color: var(--accent);
 }
 
-/* ---------- Mobile ---------- */
+/* ============================================================
+   Przełącznik trybu wyświetlania w stopce
+   ============================================================ */
+.view-toggle {
+  display: flex;
+  gap: 4px;
+}
+
+.view-btn {
+  background: none;
+  border: 0;
+  padding: 0;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--fg-muted);
+  cursor: pointer;
+  transition: color 0.1s;
+}
+
+.view-btn:hover {
+  color: var(--fg);
+}
+
+.view-btn.active {
+  color: var(--fg);
+  font-weight: 500;
+}
+
+/* ============================================================
+   Tryby wyświetlania siatki
+   ============================================================ */
+
+/* --- Tryb 1: Jeden obrazek na stronie --- */
+.grid.mode-single {
+  display: block;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.grid.mode-single .card {
+  display: block;
+}
+
+.grid.mode-single .card-image-wrapper {
+  width: 100%;
+  max-height: 70vh;
+}
+
+.grid.mode-single .card-image-wrapper img {
+  width: 100%;
+  height: auto;
+}
+
+.grid.mode-single .card-caption,
+.grid.mode-single .card-author {
+  text-align: center;
+  margin-top: var(--pad-sm);
+}
+
+/* --- Tryb 2: 4 duże miniatury --- */
+.grid.mode-large {
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--pad-md);
+}
+
+.grid.mode-large .card-image-wrapper {
+  aspect-ratio: 4 / 3;
+}
+
+.grid.mode-large .card-image-wrapper img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.grid.mode-large .card-caption {
+  font-size: 13px;
+}
+
+.grid.mode-large .card-author {
+  font-size: 12px;
+}
+
+/* --- Tryb 3: Małe ikony (domyślny) --- */
+.grid.mode-small {
+  grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+  gap: var(--pad-xs);
+}
+
+.grid.mode-small .card-image-wrapper {
+  aspect-ratio: 1;
+}
+
+.grid.mode-small .card-image-wrapper img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.grid.mode-small .card-caption,
+.grid.mode-small .card-author {
+  display: none; /* Ukrywamy podpisy dla trybu ikonek */
+}
+
+/* --- Reset do domyślnego (małe ikony) --- */
+.grid {
+  grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+  gap: var(--pad-xs);
+}
+
+.grid .card-image-wrapper {
+  aspect-ratio: 1;
+}
+
+.grid .card-image-wrapper img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.grid .card-caption,
+.grid .card-author {
+  display: none;
+}
+
+/* ============================================================
+   Mobile
+   ============================================================ */
 @media (max-width: 480px) {
-  .grid {
-    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  .grid.mode-large {
+    grid-template-columns: 1fr;
     gap: var(--pad-sm);
+  }
+  .grid.mode-small {
+    grid-template-columns: repeat(auto-fill, minmax(60px, 1fr));
   }
   .frame-header .subtitle {
     display: none;
+  }
+  .view-toggle {
+    display: none; /* Na mobilu ukrywamy przełącznik */
+  }
+}
+
+@media (min-width: 481px) {
+  .grid.mode-large .card-caption,
+  .grid.mode-large .card-author,
+  .grid.mode-single .card-caption,
+  .grid.mode-single .card-author {
+    display: block; /* Pokazuj podpisy w trybie dużym i single */
   }
 }

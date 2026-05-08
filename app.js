@@ -21,6 +21,38 @@ const modalClose = document.getElementById('modalClose');
 // Ustaw rok w stopce
 document.getElementById('year').textContent = new Date().getFullYear();
 
+// ---------- Przełącznik trybu wyświetlania ----------
+const VIEW_MODE_KEY = 'duuump-view-mode';
+const viewToggle = document.getElementById('viewToggle');
+const viewButtons = viewToggle.querySelectorAll('.view-btn');
+
+function setViewMode(mode) {
+  // Usuń wszystkie klasy trybów
+  grid.classList.remove('mode-single', 'mode-large', 'mode-small');
+
+  // Dodaj nową klasę
+  grid.classList.add('mode-' + mode);
+
+  // Zapisz w localStorage
+  localStorage.setItem(VIEW_MODE_KEY, mode);
+
+  // Aktualizuj aktywny przycisk
+  viewButtons.forEach(btn => {
+    btn.classList.toggle('active', btn.dataset.mode === mode);
+  });
+}
+
+// Obsługa kliknięcia przycisków
+viewButtons.forEach(btn => {
+  btn.addEventListener('click', () => {
+    setViewMode(btn.dataset.mode);
+  });
+});
+
+// Przywróć zapamiętany tryb (domyślnie 'small' = ikony)
+const savedMode = localStorage.getItem(VIEW_MODE_KEY) || 'small';
+setViewMode(savedMode);
+
 // ---------- Wczytywanie inspiracji ----------
 async function loadInspirations() {
   try {
