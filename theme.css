@@ -6,8 +6,8 @@
 :root {
   --bg:          #ffffff;
   --fg:          #111111;
-  --fg-muted:    #888888;
-  --fg-subtle:   #cccccc;
+  --fg-muted:    #111111;  /* wszystkie teksty czarne, bez szarości */
+  --fg-subtle:   #dddddd;
   --accent:      #ec1c24;
 
   --font-mono: ui-monospace, "SF Mono", Menlo, Monaco,
