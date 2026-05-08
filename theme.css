@@ -1,0 +1,131 @@
+/* ============================================================
+   Duuump - wspolny system designu (theme tokens + bazowe style)
+   Uzywany przez strone publiczna i panel admina.
+   ============================================================ */
+
+:root {
+  /* Kolory */
+  --bg: #ffffff;
+  --fg: #111111;          /* tekst, ramki */
+  --fg-muted: #888888;    /* hint, placeholder, drobne info */
+  --fg-subtle: #cccccc;   /* lighter dividers */
+  --accent: #ec1c24;      /* logo + akcenty (np. focus link) */
+
+  /* Typografia - monospace stack */
+  --font-mono: ui-monospace, "SF Mono", Menlo, Monaco, "Cascadia Mono",
+               Consolas, "Courier New", monospace;
+  --font-size: 14px;
+  --line-height: 1.55;
+
+  /* Ramki ASCII */
+  --border: 1px solid var(--fg);
+  --radius: 0;            /* ostre rogi - prawdziwy ASCII */
+
+  /* Odstepy (oparte o character grid - 8/16/24/32) */
+  --pad-xs: 8px;
+  --pad-sm: 16px;
+  --pad-md: 24px;
+  --pad-lg: 32px;
+}
+
+/* ---------- Reset ---------- */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html, body {
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: var(--font-mono);
+  font-size: var(--font-size);
+  line-height: var(--line-height);
+  color: var(--fg);
+  background: var(--bg);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+a {
+  color: var(--fg);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+a:hover {
+  color: var(--accent);
+}
+
+/* ---------- Layout: glowna ramka strony ---------- */
+.frame {
+  border: var(--border);
+  margin: var(--pad-md);
+  min-height: calc(100vh - 2 * var(--pad-md));
+  display: flex;
+  flex-direction: column;
+}
+
+.frame-header {
+  border-bottom: var(--border);
+  padding: var(--pad-sm) var(--pad-md);
+  display: flex;
+  align-items: center;
+  gap: var(--pad-sm);
+}
+
+.frame-header .logo {
+  display: block;
+  height: 32px;
+  width: auto;
+}
+
+.frame-header .title {
+  font-size: var(--font-size);
+  font-weight: 400;
+  margin: 0;
+  letter-spacing: 0;
+}
+
+.frame-header .title-suffix {
+  color: var(--fg-muted);
+}
+
+.frame-body {
+  padding: var(--pad-md);
+  flex: 1;
+}
+
+.frame-footer {
+  border-top: var(--border);
+  padding: var(--pad-xs) var(--pad-md);
+  font-size: 12px;
+  color: var(--fg-muted);
+  display: flex;
+  justify-content: space-between;
+  gap: var(--pad-md);
+  flex-wrap: wrap;
+}
+
+.frame-footer a { color: var(--fg-muted); }
+.frame-footer a:hover { color: var(--accent); }
+
+/* ---------- Helpers ---------- */
+.muted { color: var(--fg-muted); }
+.accent { color: var(--accent); }
+
+/* ---------- Mobile ---------- */
+@media (max-width: 600px) {
+  .frame {
+    margin: var(--pad-sm);
+    min-height: calc(100vh - 2 * var(--pad-sm));
+  }
+  .frame-header,
+  .frame-body,
+  .frame-footer {
+    padding-left: var(--pad-sm);
+    padding-right: var(--pad-sm);
+  }
+}

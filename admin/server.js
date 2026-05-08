@@ -55,6 +55,14 @@ app.get('/', (req, res) => {
   res.redirect('/admin.html');
 });
 
+// Logo i wspolny theme z folderu nadrzednego (PRZED express.static!)
+app.get('/logo.svg', (req, res) => {
+  res.sendFile(join(PROJECT_ROOT, 'logo.svg'));
+});
+app.get('/theme.css', (req, res) => {
+  res.sendFile(join(PROJECT_ROOT, 'theme.css'));
+});
+
 // Statyczne pliki admin (HTML, CSS, JS)
 app.use(express.static(__dirname));
 

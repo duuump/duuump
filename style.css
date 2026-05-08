@@ -1,49 +1,15 @@
-/* ---------- Reset & podstawy ---------- */
-*,
-*::before,
-*::after {
-  box-sizing: border-box;
-}
+/* ============================================================
+   Duuump - strona publiczna
+   Importuje wspolny theme i dodaje style specyficzne dla siatki.
+   ============================================================ */
 
-html,
-body {
-  margin: 0;
-  padding: 0;
-}
+@import url('theme.css');
 
-body {
-  font-family: Georgia, "Times New Roman", serif;
-  font-size: 14px;
-  line-height: 1.5;
-  color: #222;
-  background: #fff;
-  padding: 24px;
-}
-
-a {
-  color: #0a58ca;
-  text-decoration: none;
-}
-a:hover {
-  text-decoration: underline;
-}
-
-/* ---------- Nagłówek strony ---------- */
-.site-header {
-  margin-bottom: 32px;
-}
-
-.site-title {
-  font-size: 28px;
-  font-weight: bold;
-  margin: 0;
-  letter-spacing: -0.5px;
-}
-
-.site-subtitle {
-  margin: 0;
-  color: #888;
-  font-style: italic;
+/* ---------- Subtitle obok logo ---------- */
+.frame-header .subtitle {
+  margin-left: auto;
+  font-size: 12px;
+  color: var(--fg-muted);
 }
 
 /* ---------- Siatka inspiracji ---------- */
@@ -53,7 +19,7 @@ a:hover {
   padding: 0;
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-  gap: 24px;
+  gap: var(--pad-md);
 }
 
 .card {
@@ -77,7 +43,7 @@ a:hover {
   display: block;
   width: 100%;
   height: auto;
-  transition: opacity 0.2s ease;
+  transition: opacity 0.15s ease;
 }
 
 .card-image-wrapper:hover img {
@@ -85,35 +51,31 @@ a:hover {
 }
 
 .card-caption {
-  margin-top: 8px;
-  font-size: 13px;
-  color: #333;
+  margin-top: var(--pad-xs);
+  font-size: 12px;
+  color: var(--fg);
 }
 
 .card-author {
   margin-top: 2px;
   font-size: 12px;
-  color: #888;
-  font-style: italic;
+  color: var(--fg-muted);
 }
 
 .card-author a {
-  color: #888;
+  color: var(--fg-muted);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.card-author a:hover {
+  color: var(--accent);
 }
 
 .empty {
-  color: #888;
-  font-style: italic;
+  color: var(--fg-muted);
   text-align: center;
-  margin-top: 48px;
-}
-
-/* ---------- Stopka ---------- */
-.site-footer {
-  margin-top: 64px;
-  padding-top: 24px;
-  border-top: 1px solid #eee;
-  color: #888;
+  margin: var(--pad-lg) 0;
   font-size: 12px;
 }
 
@@ -126,7 +88,7 @@ a:hover {
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 32px;
+  padding: var(--pad-lg);
 }
 
 .modal[hidden] {
@@ -149,46 +111,44 @@ a:hover {
 }
 
 .modal-caption {
-  margin: 16px 0 4px;
-  font-size: 14px;
-  color: #222;
+  margin: var(--pad-sm) 0 4px;
+  font-size: 13px;
+  color: var(--fg);
   text-align: center;
 }
 
 .modal-author {
   margin: 0;
   font-size: 12px;
-  color: #888;
-  font-style: italic;
+  color: var(--fg-muted);
   text-align: center;
 }
 
 .modal-close {
   position: absolute;
-  top: 16px;
-  right: 24px;
+  top: var(--pad-sm);
+  right: var(--pad-md);
   background: none;
   border: 0;
-  font-size: 32px;
+  font-family: var(--font-mono);
+  font-size: 18px;
   line-height: 1;
   cursor: pointer;
-  color: #222;
+  color: var(--fg);
+  padding: 4px 8px;
 }
 
 .modal-close:hover {
-  color: #000;
+  color: var(--accent);
 }
 
 /* ---------- Mobile ---------- */
 @media (max-width: 480px) {
-  body {
-    padding: 16px;
-  }
   .grid {
     grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
-    gap: 16px;
+    gap: var(--pad-sm);
   }
-  .site-title {
-    font-size: 22px;
+  .frame-header .subtitle {
+    display: none;
   }
 }
