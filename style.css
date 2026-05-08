@@ -1,0 +1,194 @@
+/* ---------- Reset & podstawy ---------- */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 14px;
+  line-height: 1.5;
+  color: #222;
+  background: #fff;
+  padding: 24px;
+}
+
+a {
+  color: #0a58ca;
+  text-decoration: none;
+}
+a:hover {
+  text-decoration: underline;
+}
+
+/* ---------- Nagłówek strony ---------- */
+.site-header {
+  margin-bottom: 32px;
+}
+
+.site-title {
+  font-size: 28px;
+  font-weight: bold;
+  margin: 0;
+  letter-spacing: -0.5px;
+}
+
+.site-subtitle {
+  margin: 0;
+  color: #888;
+  font-style: italic;
+}
+
+/* ---------- Siatka inspiracji ---------- */
+.grid {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 24px;
+}
+
+.card {
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.card-image-wrapper {
+  background: #f6f6f6;
+  cursor: zoom-in;
+  overflow: hidden;
+  display: block;
+  border: 0;
+  padding: 0;
+  width: 100%;
+  text-align: left;
+}
+
+.card-image-wrapper img {
+  display: block;
+  width: 100%;
+  height: auto;
+  transition: opacity 0.2s ease;
+}
+
+.card-image-wrapper:hover img {
+  opacity: 0.85;
+}
+
+.card-caption {
+  margin-top: 8px;
+  font-size: 13px;
+  color: #333;
+}
+
+.card-author {
+  margin-top: 2px;
+  font-size: 12px;
+  color: #888;
+  font-style: italic;
+}
+
+.card-author a {
+  color: #888;
+}
+
+.empty {
+  color: #888;
+  font-style: italic;
+  text-align: center;
+  margin-top: 48px;
+}
+
+/* ---------- Stopka ---------- */
+.site-footer {
+  margin-top: 64px;
+  padding-top: 24px;
+  border-top: 1px solid #eee;
+  color: #888;
+  font-size: 12px;
+}
+
+/* ---------- Modal / lightbox ---------- */
+.modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(255, 255, 255, 0.97);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 32px;
+}
+
+.modal[hidden] {
+  display: none;
+}
+
+.modal-figure {
+  margin: 0;
+  max-width: 90vw;
+  max-height: 90vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.modal-figure img {
+  max-width: 100%;
+  max-height: 80vh;
+  object-fit: contain;
+}
+
+.modal-caption {
+  margin: 16px 0 4px;
+  font-size: 14px;
+  color: #222;
+  text-align: center;
+}
+
+.modal-author {
+  margin: 0;
+  font-size: 12px;
+  color: #888;
+  font-style: italic;
+  text-align: center;
+}
+
+.modal-close {
+  position: absolute;
+  top: 16px;
+  right: 24px;
+  background: none;
+  border: 0;
+  font-size: 32px;
+  line-height: 1;
+  cursor: pointer;
+  color: #222;
+}
+
+.modal-close:hover {
+  color: #000;
+}
+
+/* ---------- Mobile ---------- */
+@media (max-width: 480px) {
+  body {
+    padding: 16px;
+  }
+  .grid {
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    gap: 16px;
+  }
+  .site-title {
+    font-size: 22px;
+  }
+}

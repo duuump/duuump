@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Duuump — image bookmarking</title>
+  <meta name="description" content="Duuump — image bookmarking. Kolekcja inspiracji wizualnych." />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header class="site-header">
+    <h1 class="site-title">Duuump</h1>
+    <p class="site-subtitle">image bookmarking</p>
+  </header>
+
+  <main>
+    <ul id="grid" class="grid" aria-label="Inspiracje"></ul>
+    <p id="empty" class="empty" hidden>Brak inspiracji do wy&#347;wietlenia.</p>
+  </main>
+
+  <!-- Modal (lightbox) do podgl&#261;du obrazka -->
+  <div id="modal" class="modal" hidden>
+    <button class="modal-close" id="modalClose" aria-label="Zamknij">&times;</button>
+    <figure class="modal-figure">
+      <img id="modalImg" alt="" />
+      <figcaption>
+        <p id="modalCaption" class="modal-caption"></p>
+        <p id="modalAuthor" class="modal-author"></p>
+      </figcaption>
+    </figure>
+  </div>
+
+  <footer class="site-footer">
+    <p>&copy; <span id="year"></span> Duuump</p>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>
