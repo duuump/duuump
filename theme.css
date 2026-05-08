@@ -1,44 +1,31 @@
 /* ============================================================
-   Duuump - wspolny system designu (theme tokens + bazowe style)
+   Duuump - wspolny system designu
    Uzywany przez strone publiczna i panel admina.
    ============================================================ */
 
 :root {
-  /* Kolory */
-  --bg: #ffffff;
-  --fg: #111111;          /* tekst, ramki */
-  --fg-muted: #888888;    /* hint, placeholder, drobne info */
-  --fg-subtle: #cccccc;   /* lighter dividers */
-  --accent: #ec1c24;      /* logo + akcenty (np. focus link) */
+  --bg:          #ffffff;
+  --fg:          #111111;
+  --fg-muted:    #888888;
+  --fg-subtle:   #cccccc;
+  --accent:      #ec1c24;
 
-  /* Typografia - monospace stack */
-  --font-mono: ui-monospace, "SF Mono", Menlo, Monaco, "Cascadia Mono",
-               Consolas, "Courier New", monospace;
-  --font-size: 14px;
+  --font-mono: ui-monospace, "SF Mono", Menlo, Monaco,
+               "Cascadia Mono", Consolas, "Courier New", monospace;
+  --font-size:   14px;
   --line-height: 1.55;
 
-  /* Ramki ASCII */
-  --border: 1px solid var(--fg);
-  --radius: 0;            /* ostre rogi - prawdziwy ASCII */
+  --border:      1px solid var(--fg);
 
-  /* Odstepy (oparte o character grid - 8/16/24/32) */
-  --pad-xs: 8px;
-  --pad-sm: 16px;
-  --pad-md: 24px;
-  --pad-lg: 32px;
+  --pad-xs:  8px;
+  --pad-sm:  16px;
+  --pad-md:  24px;
+  --pad-lg:  32px;
 }
 
 /* ---------- Reset ---------- */
-*,
-*::before,
-*::after {
-  box-sizing: border-box;
-}
-
-html, body {
-  margin: 0;
-  padding: 0;
-}
+*, *::before, *::after { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; }
 
 body {
   font-family: var(--font-mono);
@@ -47,7 +34,6 @@ body {
   color: var(--fg);
   background: var(--bg);
   -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
 }
 
 a {
@@ -55,11 +41,12 @@ a {
   text-decoration: underline;
   text-underline-offset: 2px;
 }
-a:hover {
-  color: var(--accent);
-}
+a:hover { color: var(--accent); }
 
-/* ---------- Layout: glowna ramka strony ---------- */
+/* ============================================================
+   Layout: ramka
+   Identyczna na stronie publicznej i adminie.
+   ============================================================ */
 .frame {
   border: var(--border);
   margin: var(--pad-md);
@@ -68,55 +55,54 @@ a:hover {
   flex-direction: column;
 }
 
+/* --- Nagłówek --- */
 .frame-header {
   border-bottom: var(--border);
   padding: var(--pad-sm) var(--pad-md);
   display: flex;
   align-items: center;
   gap: var(--pad-sm);
+  height: 56px;               /* stała wysokość = identyczna na obu stronach */
 }
 
 .frame-header .logo {
   display: block;
   height: 32px;
   width: auto;
+  flex-shrink: 0;
 }
 
-.frame-header .title {
-  font-size: var(--font-size);
-  font-weight: 400;
-  margin: 0;
-  letter-spacing: 0;
-}
-
-.frame-header .title-suffix {
-  color: var(--fg-muted);
-}
-
+/* --- Treść --- */
 .frame-body {
   padding: var(--pad-md);
   flex: 1;
 }
 
+/* --- Stopka --- */
 .frame-footer {
   border-top: var(--border);
   padding: var(--pad-xs) var(--pad-md);
-  font-size: 12px;
+  font-size: 11px;
   color: var(--fg-muted);
   display: flex;
   justify-content: space-between;
+  align-items: center;
   gap: var(--pad-md);
   flex-wrap: wrap;
+  height: 36px;               /* stała wysokość = identyczna na obu stronach */
 }
 
-.frame-footer a { color: var(--fg-muted); }
+.frame-footer a {
+  color: var(--fg-muted);
+  text-decoration: none;
+}
 .frame-footer a:hover { color: var(--accent); }
 
-/* ---------- Helpers ---------- */
-.muted { color: var(--fg-muted); }
+/* --- Pomocnicze --- */
+.muted  { color: var(--fg-muted); }
 .accent { color: var(--accent); }
 
-/* ---------- Mobile ---------- */
+/* --- Mobile --- */
 @media (max-width: 600px) {
   .frame {
     margin: var(--pad-sm);

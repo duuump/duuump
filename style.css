@@ -1,11 +1,10 @@
 /* ============================================================
    Duuump - strona publiczna
-   Importuje wspolny theme i dodaje style specyficzne dla siatki.
    ============================================================ */
 
 @import url('theme.css');
 
-/* ---------- Subtitle obok logo ---------- */
+/* ---------- Nagłówek - identyczny z adminem ---------- */
 .frame-header .subtitle {
   margin-left: auto;
   font-size: 12px;
@@ -18,7 +17,7 @@
   margin: 0;
   padding: 0;
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
   gap: var(--pad-md);
 }
 
@@ -29,7 +28,6 @@
 }
 
 .card-image-wrapper {
-  background: #f6f6f6;
   cursor: zoom-in;
   overflow: hidden;
   display: block;
@@ -37,6 +35,7 @@
   padding: 0;
   width: 100%;
   text-align: left;
+  background: #f6f6f6;
 }
 
 .card-image-wrapper img {
@@ -58,7 +57,7 @@
 
 .card-author {
   margin-top: 2px;
-  font-size: 12px;
+  font-size: 11px;
   color: var(--fg-muted);
 }
 
@@ -131,10 +130,10 @@
   background: none;
   border: 0;
   font-family: var(--font-mono);
-  font-size: 18px;
+  font-size: 14px;
   line-height: 1;
   cursor: pointer;
-  color: var(--fg);
+  color: var(--fg-muted);
   padding: 4px 8px;
 }
 

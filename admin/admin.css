@@ -5,12 +5,7 @@
 
 @import url('/theme.css');
 
-/* Ustaw tlo body na lekko szare zeby ramka byla czytelniejsza */
-body {
-  background: var(--bg);
-}
-
-/* ---------- Naglowek ---------- */
+/* ---------- Naglowek - identyczny z publiczna strona ---------- */
 .frame-header .title-text {
   margin-left: auto;
   font-size: 12px;
