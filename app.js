@@ -47,7 +47,7 @@ viewButtons.forEach(btn => {
 });
 
 // Przywróć zapamiętany tryb (domyślnie 'small' = ikony)
-const savedMode = localStorage.getItem(VIEW_MODE_KEY) || 'small';
+const savedMode = localStorage.getItem(VIEW_MODE_KEY) || 'single';
 setViewMode(savedMode);
 
 // ---------- Wczytywanie inspiracji ----------
