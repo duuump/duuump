@@ -4,62 +4,71 @@
     "date": "2026-05-08T07:50:36Z",
     "caption": "Exhibition",
     "author": "Barry McGee",
-    "authorUrl": "https://www.instagram.com/popular/barry-mcgee/"
+    "authorUrl": "https://www.instagram.com/popular/barry-mcgee/",
+    "category": "other"
   },
   {
     "url": "https://res.cloudinary.com/dlbjcgteq/image/upload/v1778228748/kimchisuperpower_-_identity_t0r2os.jpg",
     "date": "2026-05-08T08:25:48Z",
     "caption": "Riso",
     "author": "Kimchi",
-    "authorUrl": "https://www.instagram.com/kimchisuperpower/"
+    "authorUrl": "https://www.instagram.com/kimchisuperpower/",
+    "category": "other"
   },
   {
     "url": "https://res.cloudinary.com/dlbjcgteq/image/upload/v1778255262/ycasogeuif1sfufcarsq.gif",
     "date": "2026-05-08T15:47:42Z",
     "caption": "Burberry Winter 2025",
     "author": "Blinkink",
-    "authorUrl": "https://www.instagram.com/blink_ink/"
+    "authorUrl": "https://www.instagram.com/blink_ink/",
+    "category": "other"
   },
   {
     "url": "https://res.cloudinary.com/dlbjcgteq/image/upload/v1778256043/kmq44tgmhealrradg8el.webp",
     "date": "2026-05-08T16:00:43Z",
     "caption": "The New York Times",
     "author": "Sho Shibuya",
-    "authorUrl": "https://www.instagram.com/shoshibuya/"
+    "authorUrl": "https://www.instagram.com/shoshibuya/",
+    "category": "other"
   },
   {
     "url": "https://res.cloudinary.com/dlbjcgteq/image/upload/v1778267649/eylv0yyfrxxxe6gy2izw.jpg",
     "date": "2026-05-08T19:14:09Z",
     "caption": "EDWIN x CLUB MIX capsule",
     "author": "Stewart Armstrong",
-    "authorUrl": "https://www.instagram.com/stewart_armstrong_/"
+    "authorUrl": "https://www.instagram.com/stewart_armstrong_/",
+    "category": "other"
   },
   {
     "url": "https://res.cloudinary.com/dlbjcgteq/image/upload/v1778272080/jflmqw8sba0iuqeyulel.jpg",
     "date": "2026-05-08T20:28:00Z",
     "caption": "A Language of Clarity",
     "author": "Massimo Vignelli",
-    "authorUrl": "https://www.instagram.com/designmilk"
+    "authorUrl": "https://www.instagram.com/designmilk",
+    "category": "other"
   },
   {
     "url": "https://res.cloudinary.com/dlbjcgteq/image/upload/v1778314165/hspolbzkc8vacrfj8xog.jpg",
     "date": "2026-05-09T08:09:25Z",
     "caption": "Studio",
     "author": "Andreas Samuelsson",
-    "authorUrl": "https://www.instagram.com/andreas.samuelsson"
+    "authorUrl": "https://www.instagram.com/andreas.samuelsson",
+    "category": "other"
   },
   {
     "url": "https://res.cloudinary.com/dlbjcgteq/image/upload/v1778314268/atnbwaxeewijgjl0pzjd.jpg",
     "date": "2026-05-09T08:11:08Z",
     "caption": "Magic Lab sign",
     "author": "Tric Studio",
-    "authorUrl": "https://www.instagram.com/tric.studio/"
+    "authorUrl": "https://www.instagram.com/tric.studio/",
+    "category": "other"
   },
   {
     "url": "https://res.cloudinary.com/dlbjcgteq/image/upload/v1778314341/no95kudkm6ntiwh9ypug.jpg",
     "date": "2026-05-09T08:12:21Z",
     "caption": "Planet Frog cover",
     "author": "Action Bronson",
-    "authorUrl": "https://www.instagram.com/bambambaklava/"
+    "authorUrl": "https://www.instagram.com/bambambaklava/",
+    "category": "other"
   }
 ]

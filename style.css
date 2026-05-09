@@ -11,6 +11,44 @@
   color: var(--fg-muted);
 }
 
+/* ---------- Pasek kategorii ---------- */
+.frame-categories {
+  flex-shrink: 0;
+  border-bottom: var(--border);
+  padding: var(--pad-xs) var(--pad-md);
+  display: flex;
+  gap: var(--pad-sm);
+  align-items: center;
+  font-size: 12px;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+.frame-categories::-webkit-scrollbar {
+  display: none;
+}
+
+.cat-btn {
+  background: none;
+  border: 0;
+  padding: 0;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--fg-muted);
+  cursor: pointer;
+  white-space: nowrap;
+  text-decoration: none;
+}
+
+.cat-btn:hover {
+  color: var(--accent);
+}
+
+.cat-btn.active {
+  color: var(--accent);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
 /* ---------- Siatka inspiracji ---------- */
 .grid {
   list-style: none;
@@ -35,7 +73,7 @@
   padding: 0;
   width: 100%;
   text-align: left;
-  background: #f6f6f6;
+  background: var(--fg-subtle);
 }
 
 .card-image-wrapper img {

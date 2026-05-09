@@ -170,6 +170,7 @@ form.addEventListener('submit', async (e) => {
           caption: $('caption').value.trim(),
           author: $('author').value.trim(),
           authorUrl: $('authorUrl').value.trim(),
+          category: $('category').value,
         }),
       });
       data = await res.json();
@@ -180,6 +181,7 @@ form.addEventListener('submit', async (e) => {
       fd.append('caption', $('caption').value.trim());
       fd.append('author', $('author').value.trim());
       fd.append('authorUrl', $('authorUrl').value.trim());
+      fd.append('category', $('category').value);
       res = await fetch('/api/add', { method: 'POST', body: fd });
       data = await res.json();
     }
@@ -276,6 +278,7 @@ function enterEditMode(li, item) {
   $$('input[name="caption"]', editForm).value = item.caption || '';
   $$('input[name="author"]', editForm).value = item.author || '';
   $$('input[name="authorUrl"]', editForm).value = item.authorUrl || '';
+  $$('select[name="category"]', editForm).value = item.category || 'other';
 
   editForm.addEventListener('submit', async (e) => {
     e.preventDefault();
@@ -295,6 +298,7 @@ async function saveEdit(li, item, editForm) {
     caption: $$('input[name="caption"]', editForm).value,
     author: $$('input[name="author"]', editForm).value,
     authorUrl: $$('input[name="authorUrl"]', editForm).value,
+    category: $$('select[name="category"]', editForm).value,
   };
 
   listStatus('loading', 'Zapisuje zmiany...');

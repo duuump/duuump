@@ -167,7 +167,7 @@ app.post('/api/add', upload.single('image'), async (req, res) => {
   try {
     if (!req.file) return res.status(400).json({ error: 'Brak pliku' });
     tmpPath = req.file.path;
-    const { caption = '', author = '', authorUrl = '' } = req.body;
+    const { caption = '', author = '', authorUrl = '', category = 'other' } = req.body;
 
     console.log(`==> Add: ${req.file.originalname}`);
     const result = await uploadToCloudinary(tmpPath);
@@ -177,6 +177,7 @@ app.post('/api/add', upload.single('image'), async (req, res) => {
     if (caption) entry.caption = caption;
     if (author) entry.author = author;
     if (authorUrl) entry.authorUrl = authorUrl;
+    entry.category = category || 'other';
 
     const data = await readInspirations();
     data.push(entry);
@@ -203,15 +204,16 @@ app.post('/api/add', upload.single('image'), async (req, res) => {
 // Dodaje wpis z Cloudinary URL (gdy obrazek byl wczesniej wgrany przez upload-url)
 app.post('/api/add-from-url', async (req, res) => {
   try {
-    const { url, caption = '', author = '', authorUrl = '' } = req.body || {};
+    const { url, caption = '', author = '', authorUrl = '', category = 'other' } = req.body || {};
     if (!url) return res.status(400).json({ error: 'Brak URL obrazka' });
 
     console.log(`==> Add from URL: ${url}`);
 
-    const entry = { url };
+    const entry = { url, date: new Date().toISOString() };
     if (caption) entry.caption = caption;
     if (author) entry.author = author;
     if (authorUrl) entry.authorUrl = authorUrl;
+    entry.category = category || 'other';
 
     const data = await readInspirations();
     data.push(entry);
@@ -282,7 +284,7 @@ app.post('/api/upload-url', async (req, res) => {
 // Edytuje TYLKO te pola ktore sa w body. Pomijajac url-e nie zmieniamy obrazka.
 app.patch('/api/update', async (req, res) => {
   try {
-    const { url, caption, author, authorUrl } = req.body || {};
+    const { url, caption, author, authorUrl, category } = req.body || {};
     if (!url) return res.status(400).json({ error: 'Brak url (identyfikator wpisu)' });
 
     const data = await readInspirations();
@@ -301,12 +303,15 @@ app.patch('/api/update', async (req, res) => {
     setOrDelete('caption', caption);
     setOrDelete('author', author);
     setOrDelete('authorUrl', authorUrl);
+    setOrDelete('category', category);
 
     // Zachowaj pole url na pierwszym miejscu (kosmetyka)
     const reordered = { url: updated.url };
+    if (updated.date) reordered.date = updated.date;
     if (updated.caption) reordered.caption = updated.caption;
     if (updated.author) reordered.author = updated.author;
     if (updated.authorUrl) reordered.authorUrl = updated.authorUrl;
+    if (updated.category) reordered.category = updated.category;
     data[idx] = reordered;
 
     await writeInspirations(data);

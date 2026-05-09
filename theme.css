@@ -23,6 +23,15 @@
   --pad-lg:  32px;
 }
 
+/* ---------- Dark mode ---------- */
+:root[data-theme="dark"] {
+  --bg:          #111111;
+  --fg:          #f0f0f0;
+  --fg-muted:    #f0f0f0;
+  --fg-subtle:   #333333;
+  --accent:      #ec1c24;
+}
+
 /* ---------- Reset ---------- */
 *, *::before, *::after { box-sizing: border-box; }
 html, body { margin: 0; padding: 0; }

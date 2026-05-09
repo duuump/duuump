@@ -172,7 +172,8 @@ form {
   content: ":";
 }
 
-.field input {
+.field input,
+.field select {
   font-family: var(--font-mono);
   font-size: 13px;
   padding: var(--pad-xs) var(--pad-sm);
@@ -183,7 +184,8 @@ form {
   width: 100%;
 }
 
-.field input:focus {
+.field input:focus,
+.field select:focus {
   outline: none;
   border-color: var(--accent);
 }
@@ -402,7 +404,8 @@ form {
   color: var(--fg-muted);
 }
 
-.field-mini input {
+.field-mini input,
+.field-mini select {
   font-family: var(--font-mono);
   font-size: 12px;
   padding: 4px 8px;
@@ -413,7 +416,8 @@ form {
   width: 100%;
 }
 
-.field-mini input:focus {
+.field-mini input:focus,
+.field-mini select:focus {
   outline: none;
   border-color: var(--accent);
 }

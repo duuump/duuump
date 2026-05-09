@@ -57,6 +57,44 @@ if (isMobile) {
   setViewMode(localStorage.getItem(VIEW_MODE_KEY) || 'single', false);
 }
 
+// ---------- Dark / light mode ----------
+const THEME_KEY = 'duuump-theme';
+const themeToggle = document.getElementById('themeToggle');
+
+function applyTheme(theme) {
+  if (theme === 'dark') {
+    document.documentElement.setAttribute('data-theme', 'dark');
+    themeToggle.textContent = '[ ☀ ]';
+  } else {
+    document.documentElement.removeAttribute('data-theme');
+    themeToggle.textContent = '[ ☾ ]';
+  }
+}
+
+const savedTheme = localStorage.getItem(THEME_KEY) || 'light';
+applyTheme(savedTheme);
+
+themeToggle.addEventListener('click', () => {
+  const current = document.documentElement.getAttribute('data-theme') === 'dark' ? 'dark' : 'light';
+  const next = current === 'dark' ? 'light' : 'dark';
+  applyTheme(next);
+  localStorage.setItem(THEME_KEY, next);
+});
+
+// ---------- Filtrowanie po kategoriach ----------
+const categoryBar = document.getElementById('categoryBar');
+const catButtons = categoryBar.querySelectorAll('.cat-btn');
+let currentCategory = 'all';
+let allItems = [];
+
+catButtons.forEach(btn => {
+  btn.addEventListener('click', () => {
+    currentCategory = btn.dataset.category;
+    catButtons.forEach(b => b.classList.toggle('active', b === btn));
+    renderGrid(allItems);
+  });
+});
+
 // ---------- Wczytywanie inspiracji ----------
 async function loadInspirations() {
   try {
@@ -66,6 +104,7 @@ async function loadInspirations() {
       throw new Error('Nie udało się wczytać inspirations.json');
     }
     const data = await response.json();
+    allItems = data;
     renderGrid(data);
   } catch (error) {
     console.error(error);
@@ -76,13 +115,29 @@ async function loadInspirations() {
 
 // ---------- Renderowanie siatki ----------
 function renderGrid(items) {
+  // Wyczyść grid przed renderowaniem
+  grid.innerHTML = '';
+  emptyMessage.hidden = true;
+
   if (!Array.isArray(items) || items.length === 0) {
     emptyMessage.hidden = false;
     return;
   }
 
+  // Filtrowanie po kategorii
+  let filtered = items;
+  if (currentCategory !== 'all') {
+    filtered = items.filter(item => (item.category || 'other') === currentCategory);
+  }
+
+  if (filtered.length === 0) {
+    emptyMessage.textContent = 'Brak inspiracji w tej kategorii.';
+    emptyMessage.hidden = false;
+    return;
+  }
+
   // Odwracamy kolejność, żeby najnowsze (ostatnio dodane do JSON-a) były na górze
-  const ordered = [...items].reverse();
+  const ordered = [...filtered].reverse();
 
   const fragment = document.createDocumentFragment();
 

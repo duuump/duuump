@@ -18,6 +18,17 @@
       <span class="subtitle">personal image bookmarking</span>
     </header>
 
+    <nav class="frame-categories" id="categoryBar" aria-label="Kategorie">
+      <button type="button" class="cat-btn active" data-category="all">[ all ]</button>
+      <button type="button" class="cat-btn" data-category="logo">logo</button>
+      <button type="button" class="cat-btn" data-category="typography">typography</button>
+      <button type="button" class="cat-btn" data-category="photography">photography</button>
+      <button type="button" class="cat-btn" data-category="illustration">illustration</button>
+      <button type="button" class="cat-btn" data-category="object">object</button>
+      <button type="button" class="cat-btn" data-category="music">music</button>
+      <button type="button" class="cat-btn" data-category="other">other</button>
+    </nav>
+
     <main class="frame-body">
       <ul id="grid" class="grid" aria-label="Inspiracje"></ul>
       <p id="empty" class="empty" hidden>Brak inspiracji.</p>
@@ -30,6 +41,7 @@
         <button type="button" class="view-btn" data-mode="single" title="Jeden duży">[ 1 ]</button>
         <button type="button" class="view-btn" data-mode="large" title="Duże miniatury">[ 4 ]</button>
         <button type="button" class="view-btn" data-mode="small" title="Małe ikony">[ : ]</button>
+        <button type="button" class="view-btn theme-btn" id="themeToggle" title="Dark / light mode">[ ☾ ]</button>
       </span>
     </footer>
 
