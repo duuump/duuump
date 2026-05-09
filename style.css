@@ -161,39 +161,6 @@
   font-size: 11px;
 }
 
-.clock {
-  font-variant-numeric: tabular-nums;
-  letter-spacing: 0;
-}
-
-.separator {
-  color: var(--fg-subtle);
-}
-
-.weather {
-  display: flex;
-  align-items: center;
-  gap: 4px;
-}
-
-.weather-icon {
-  font-family: var(--font-mono);
-  font-size: 11px;
-}
-
-.weather-temp {
-  font-weight: 500;
-}
-
-.day-night {
-  color: var(--fg-muted);
-  margin-left: 4px;
-}
-
-.weather-loading {
-  color: var(--fg-muted);
-}
-
 /* ============================================================
    Przełącznik trybu wyświetlania w stopce
    ============================================================ */
