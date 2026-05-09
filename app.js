@@ -23,15 +23,17 @@ const VIEW_MODE_KEY = 'duuump-view-mode';
 const viewToggle = document.getElementById('viewToggle');
 const viewButtons = viewToggle.querySelectorAll('.view-btn');
 
-function setViewMode(mode) {
+function setViewMode(mode, persist = true) {
   // Usuń wszystkie klasy trybów
   grid.classList.remove('mode-single', 'mode-large', 'mode-small');
 
   // Dodaj nową klasę
   grid.classList.add('mode-' + mode);
 
-  // Zapisz w localStorage
-  localStorage.setItem(VIEW_MODE_KEY, mode);
+  // Zapisz w localStorage tylko gdy user kliknął
+  if (persist) {
+    localStorage.setItem(VIEW_MODE_KEY, mode);
+  }
 
   // Aktualizuj aktywny przycisk
   viewButtons.forEach(btn => {
@@ -39,16 +41,21 @@ function setViewMode(mode) {
   });
 }
 
-// Obsługa kliknięcia przycisków
+// Obsługa kliknięcia przycisków (zapisujemy preferencję)
 viewButtons.forEach(btn => {
   btn.addEventListener('click', () => {
-    setViewMode(btn.dataset.mode);
+    setViewMode(btn.dataset.mode, true);
   });
 });
 
-// Przywróć zapamiętany tryb (domyślnie 'small' = ikony)
-const savedMode = localStorage.getItem(VIEW_MODE_KEY) || 'single';
-setViewMode(savedMode);
+// Na mobile (≤480px) zawsze wymuszamy tryb 'single' — bez zapisu do localStorage
+// Na desktop przywracamy zapamiętany tryb (domyślnie 'single')
+const isMobile = window.matchMedia('(max-width: 480px)').matches;
+if (isMobile) {
+  setViewMode('single', false);
+} else {
+  setViewMode(localStorage.getItem(VIEW_MODE_KEY) || 'single', false);
+}
 
 // ---------- Wczytywanie inspiracji ----------
 async function loadInspirations() {
