@@ -18,9 +18,6 @@ const modalCaption = document.getElementById('modalCaption');
 const modalAuthor = document.getElementById('modalAuthor');
 const modalClose = document.getElementById('modalClose');
 
-// Ustaw rok w stopce
-document.getElementById('year').textContent = new Date().getFullYear();
-
 // ---------- Przełącznik trybu wyświetlania ----------
 const VIEW_MODE_KEY = 'duuump-view-mode';
 const viewToggle = document.getElementById('viewToggle');
