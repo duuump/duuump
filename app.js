@@ -116,34 +116,39 @@ function createCard(item) {
     li.appendChild(caption);
   }
 
-  // Autor (z opcjonalnym linkiem)
-  if (item.author) {
-    const author = document.createElement('p');
-    author.className = 'card-author';
+  // Linia autora + daty (autor po lewej, data po prawej)
+  if (item.author || item.date) {
+    const meta = document.createElement('p');
+    meta.className = 'card-meta';
 
-    if (item.authorUrl) {
-      const a = document.createElement('a');
-      a.href = item.authorUrl;
-      a.target = '_blank';
-      a.rel = 'noopener noreferrer';
-      a.textContent = item.author;
-      author.appendChild(document.createTextNode('— '));
-      author.appendChild(a);
-    } else {
-      author.textContent = '— ' + item.author;
+    // Autor (lewa strona)
+    const authorSpan = document.createElement('span');
+    authorSpan.className = 'card-author';
+    if (item.author) {
+      if (item.authorUrl) {
+        const a = document.createElement('a');
+        a.href = item.authorUrl;
+        a.target = '_blank';
+        a.rel = 'noopener noreferrer';
+        a.textContent = item.author;
+        authorSpan.appendChild(document.createTextNode('— '));
+        authorSpan.appendChild(a);
+      } else {
+        authorSpan.textContent = '— ' + item.author;
+      }
+    }
+    meta.appendChild(authorSpan);
+
+    // Data (prawa strona)
+    if (item.date) {
+      const dateSpan = document.createElement('span');
+      dateSpan.className = 'card-date';
+      const dateStr = item.date.substring(0, 10);
+      dateSpan.textContent = '[' + dateStr + ']';
+      meta.appendChild(dateSpan);
     }
 
-    li.appendChild(author);
-  }
-
-  // Data dodania
-  if (item.date) {
-    const date = document.createElement('p');
-    date.className = 'card-date';
-    // Format: YYYY-MM-DD z Cloudinary timestamp
-    const dateStr = item.date.substring(0, 10);
-    date.textContent = '[' + dateStr + ']';
-    li.appendChild(date);
+    li.appendChild(meta);
   }
 
   return li;
