@@ -56,6 +56,7 @@ app.get('/', (req, res) => res.redirect('/admin.html'));
 // Logo i theme z folderu nadrzednego (PRZED express.static!)
 app.get('/logo.svg', (req, res) => res.sendFile(join(PROJECT_ROOT, 'logo.svg')));
 app.get('/theme.css', (req, res) => res.sendFile(join(PROJECT_ROOT, 'theme.css')));
+app.get('/categories.json', (req, res) => res.sendFile(join(PROJECT_ROOT, 'categories.json')));
 app.use(express.static(__dirname));
 
 const upload = multer({

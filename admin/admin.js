@@ -427,6 +427,34 @@ async function persistOrder() {
 }
 
 // ============================================================
+// Load categories from config
+// ============================================================
+async function loadCategoryOptions() {
+  const selects = document.querySelectorAll('.category-select');
+  if (selects.length === 0) return;
+
+  try {
+    const res = await fetch('/categories.json');
+    const categories = await res.json();
+
+    selects.forEach((select) => {
+      select.innerHTML = '';
+      categories.forEach((cat) => {
+        const opt = document.createElement('option');
+        opt.value = cat.id;
+        opt.textContent = cat.label;
+        select.appendChild(opt);
+      });
+    });
+  } catch (e) {
+    console.error('Nie udało się wczytać kategorii:', e);
+    selects.forEach((select) => {
+      select.innerHTML = '<option value="other">other (fallback)</option>';
+    });
+  }
+}
+
+// ============================================================
 // Start
 // ============================================================
-loadList();
+loadCategoryOptions().then(() => loadList());

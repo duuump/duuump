@@ -83,9 +83,51 @@ themeToggle.addEventListener('click', () => {
 
 // ---------- Filtrowanie po kategoriach ----------
 const categoryBar = document.getElementById('categoryBar');
-const catButtons = categoryBar.querySelectorAll('.cat-btn');
 let currentCategory = 'all';
 let allItems = [];
+let categories = [];
+
+// Ładuj kategorie z pliku konfiguracyjnego
+async function loadCategories() {
+  try {
+    const res = await fetch('categories.json');
+    categories = await res.json();
+    renderCategoryButtons();
+  } catch (e) {
+    console.error('Nie udało się wczytać kategorii:', e);
+  }
+}
+
+// Generuj przyciski kategorii
+function renderCategoryButtons() {
+  // Przycisk "all" - zawsze na początku
+  const allBtn = document.createElement('button');
+  allBtn.type = 'button';
+  allBtn.className = 'cat-btn active';
+  allBtn.dataset.category = 'all';
+  allBtn.textContent = '[ all ]';
+  categoryBar.appendChild(allBtn);
+
+  // Przyciski z konfiguracji
+  categories.forEach((cat) => {
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'cat-btn';
+    btn.dataset.category = cat.id;
+    btn.textContent = cat.label;
+    categoryBar.appendChild(btn);
+  });
+
+  // Obsługa kliknięć
+  const catButtons = categoryBar.querySelectorAll('.cat-btn');
+  catButtons.forEach((btn) => {
+    btn.addEventListener('click', () => {
+      currentCategory = btn.dataset.category;
+      catButtons.forEach((b) => b.classList.toggle('active', b === btn));
+      renderGrid(allItems);
+    });
+  });
+}
 
 catButtons.forEach(btn => {
   btn.addEventListener('click', () => {
@@ -242,4 +284,4 @@ document.addEventListener('keydown', (e) => {
 });
 
 // Start
-loadInspirations();
+loadCategories().then(() => loadInspirations());
