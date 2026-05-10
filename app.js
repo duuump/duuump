@@ -129,14 +129,6 @@ function renderCategoryButtons() {
   });
 }
 
-catButtons.forEach(btn => {
-  btn.addEventListener('click', () => {
-    currentCategory = btn.dataset.category;
-    catButtons.forEach(b => b.classList.toggle('active', b === btn));
-    renderGrid(allItems);
-  });
-});
-
 // ---------- Wczytywanie inspiracji ----------
 async function loadInspirations() {
   try {
