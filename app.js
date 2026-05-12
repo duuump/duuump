@@ -179,6 +179,12 @@ function renderCurrentView() {
 }
 
 // ---------- Kolaż ----------
+const COLLAGE_PALETTE = [
+  '#e8c547', '#c4aa7a', '#7a8fa6', '#b5c4b1',
+  '#c97d6e', '#d4a5b5', '#8ba3c7', '#a8b89a',
+  '#e8c0b0', '#6b8c6b', '#c8b4a0', '#9aafb8',
+];
+
 function renderCollage(items) {
   collageCanvas.innerHTML = '';
   emptyMessage.hidden = true;
@@ -188,31 +194,40 @@ function renderCollage(items) {
     return;
   }
 
-  // Losowy podzbiór (max 14 zdjęć)
   const shuffled = [...items].sort(() => Math.random() - 0.5);
-  const count = Math.min(shuffled.length, 14);
+  const count = Math.min(shuffled.length, 16);
   const selected = shuffled.slice(0, count);
 
-  // Rozkładamy równomiernie w siatce i dodajemy losowy szum
-  const cols = 4;
-  const rows = Math.ceil(count / cols);
-  const cellW = 100 / cols;   // % szerokości na kolumnę
-  const cellH = 100 / rows;  // % wysokości na wiersz
+  // Kolorowe prostokąty w tle
+  const blockCount = 2 + Math.floor(Math.random() * 4);
+  for (let i = 0; i < blockCount; i++) {
+    const block = document.createElement('div');
+    block.className = 'collage-block';
+    const isPortrait = Math.random() > 0.4;
+    const w = isPortrait ? (4 + Math.random() * 10) : (15 + Math.random() * 30);
+    const h = isPortrait ? (25 + Math.random() * 55) : (4 + Math.random() * 12);
+    const x = Math.random() * 88;
+    const y = Math.random() * 85;
+    const color = COLLAGE_PALETTE[Math.floor(Math.random() * COLLAGE_PALETTE.length)];
+    const opacity = 0.55 + Math.random() * 0.45;
+    const z = Math.floor(Math.random() * 8);
+    block.style.cssText = `width:${w}%;height:${h}%;left:${x}%;top:${y}%;background:${color};opacity:${opacity};z-index:${z};`;
+    collageCanvas.appendChild(block);
+  }
 
+  // Zdjęcia — losowe pozycje, trzy klasy rozmiarów
   selected.forEach((item, i) => {
-    const col = i % cols;
-    const row = Math.floor(i / cols);
+    const r = Math.random();
+    let w;
+    if (r < 0.25)      w = 10 + Math.random() * 8;   // mały: 10–18%
+    else if (r < 0.65) w = 20 + Math.random() * 14;  // średni: 20–34%
+    else               w = 32 + Math.random() * 22;  // duży: 32–54%
 
-    const baseX = col * cellW;
-    const baseY = row * cellH;
-    const jitterX = (Math.random() - 0.5) * cellW * 0.9;
-    const jitterY = (Math.random() - 0.5) * cellH * 0.9;
-
-    const x = baseX + jitterX;
-    const y = baseY + jitterY;
-    const w = cellW * (0.75 + Math.random() * 0.75); // 75–150% szerokości komórki
-    const rot = (Math.random() - 0.5) * 14;           // –7° do +7°
-    const z = Math.floor(Math.random() * 10);
+    // Pozycja — może lekko wychodzić poza krawędź
+    const x = -4 + Math.random() * 84;
+    const y = -4 + Math.random() * 88;
+    const rot = (Math.random() - 0.5) * 18; // –9° do +9°
+    const z = 10 + i;
 
     const div = document.createElement('div');
     div.className = 'collage-item';
