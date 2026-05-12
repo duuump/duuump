@@ -84,10 +84,10 @@ const themeToggle = document.getElementById('themeToggle');
 function applyTheme(theme) {
   if (theme === 'dark') {
     document.documentElement.setAttribute('data-theme', 'dark');
-    themeToggle.textContent = '[ ☀ ]';
+    themeToggle.textContent = 'dark';
   } else {
     document.documentElement.removeAttribute('data-theme');
-    themeToggle.textContent = '[ ☾ ]';
+    themeToggle.textContent = 'light';
   }
 }
 
