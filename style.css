@@ -373,6 +373,11 @@
   display: none;
 }
 
+.collage-block {
+  position: absolute;
+  pointer-events: none;
+}
+
 .collage-item {
   position: absolute;
   cursor: zoom-in;
