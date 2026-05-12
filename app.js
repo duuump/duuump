@@ -11,6 +11,8 @@
 // ============================================================
 
 const grid = document.getElementById('grid');
+const collageCanvas = document.getElementById('collage');
+const frameBody = document.getElementById('frameBody');
 const emptyMessage = document.getElementById('empty');
 const modal = document.getElementById('modal');
 const modalImg = document.getElementById('modalImg');
@@ -23,12 +25,30 @@ const VIEW_MODE_KEY = 'duuump-view-mode';
 const viewToggle = document.getElementById('viewToggle');
 const viewButtons = viewToggle.querySelectorAll('.view-btn');
 
-function setViewMode(mode, persist = true) {
-  // Usuń wszystkie klasy trybów
-  grid.classList.remove('mode-single', 'mode-large', 'mode-small');
+let currentMode = 'collage';
 
-  // Dodaj nową klasę
-  grid.classList.add('mode-' + mode);
+// Deklaracje globalne — muszą być przed setViewMode (wywoływanym synchronicznie przy starcie)
+let currentCategory = 'all';
+let allItems = [];
+let categories = [];
+
+function setViewMode(mode, persist = true) {
+  currentMode = mode;
+
+  if (mode === 'collage') {
+    grid.hidden = true;
+    collageCanvas.hidden = false;
+    frameBody.classList.add('mode-collage');
+    grid.classList.remove('mode-single', 'mode-large', 'mode-small');
+    if (allItems.length > 0) renderCollage(getFilteredItems());
+  } else {
+    grid.hidden = false;
+    collageCanvas.hidden = true;
+    frameBody.classList.remove('mode-collage');
+    grid.classList.remove('mode-single', 'mode-large', 'mode-small');
+    grid.classList.add('mode-' + mode);
+    if (allItems.length > 0) renderGrid(allItems);
+  }
 
   // Zapisz w localStorage tylko gdy user kliknął
   if (persist) {
@@ -49,12 +69,12 @@ viewButtons.forEach(btn => {
 });
 
 // Na mobile (≤480px) zawsze wymuszamy tryb 'single' — bez zapisu do localStorage
-// Na desktop przywracamy zapamiętany tryb (domyślnie 'single')
+// Na desktop przywracamy zapamiętany tryb (domyślnie 'collage')
 const isMobile = window.matchMedia('(max-width: 480px)').matches;
 if (isMobile) {
   setViewMode('single', false);
 } else {
-  setViewMode(localStorage.getItem(VIEW_MODE_KEY) || 'single', false);
+  setViewMode(localStorage.getItem(VIEW_MODE_KEY) || 'collage', false);
 }
 
 // ---------- Dark / light mode ----------
@@ -83,9 +103,11 @@ themeToggle.addEventListener('click', () => {
 
 // ---------- Filtrowanie po kategoriach ----------
 const categoryBar = document.getElementById('categoryBar');
-let currentCategory = 'all';
-let allItems = [];
-let categories = [];
+
+function getFilteredItems() {
+  if (currentCategory === 'all') return allItems;
+  return allItems.filter(item => (item.category || 'other') === currentCategory);
+}
 
 // Ładuj kategorie z pliku konfiguracyjnego
 async function loadCategories() {
@@ -124,7 +146,7 @@ function renderCategoryButtons() {
     btn.addEventListener('click', () => {
       currentCategory = btn.dataset.category;
       catButtons.forEach((b) => b.classList.toggle('active', b === btn));
-      renderGrid(allItems);
+      renderCurrentView();
     });
   });
 }
@@ -139,12 +161,72 @@ async function loadInspirations() {
     }
     const data = await response.json();
     allItems = data;
-    renderGrid(data);
+    renderCurrentView();
   } catch (error) {
     console.error(error);
     emptyMessage.textContent = 'Wystąpił błąd przy wczytywaniu inspiracji.';
     emptyMessage.hidden = false;
   }
+}
+
+// ---------- Dispatcher: siatka lub kolaż ----------
+function renderCurrentView() {
+  if (currentMode === 'collage') {
+    renderCollage(getFilteredItems());
+  } else {
+    renderGrid(allItems);
+  }
+}
+
+// ---------- Kolaż ----------
+function renderCollage(items) {
+  collageCanvas.innerHTML = '';
+  emptyMessage.hidden = true;
+
+  if (!items || items.length === 0) {
+    emptyMessage.hidden = false;
+    return;
+  }
+
+  // Losowy podzbiór (max 14 zdjęć)
+  const shuffled = [...items].sort(() => Math.random() - 0.5);
+  const count = Math.min(shuffled.length, 14);
+  const selected = shuffled.slice(0, count);
+
+  // Rozkładamy równomiernie w siatce i dodajemy losowy szum
+  const cols = 4;
+  const rows = Math.ceil(count / cols);
+  const cellW = 100 / cols;   // % szerokości na kolumnę
+  const cellH = 100 / rows;  // % wysokości na wiersz
+
+  selected.forEach((item, i) => {
+    const col = i % cols;
+    const row = Math.floor(i / cols);
+
+    const baseX = col * cellW;
+    const baseY = row * cellH;
+    const jitterX = (Math.random() - 0.5) * cellW * 0.9;
+    const jitterY = (Math.random() - 0.5) * cellH * 0.9;
+
+    const x = baseX + jitterX;
+    const y = baseY + jitterY;
+    const w = cellW * (0.75 + Math.random() * 0.75); // 75–150% szerokości komórki
+    const rot = (Math.random() - 0.5) * 14;           // –7° do +7°
+    const z = Math.floor(Math.random() * 10);
+
+    const div = document.createElement('div');
+    div.className = 'collage-item';
+    div.style.cssText = `--r:${rot}deg;width:${w}%;left:${x}%;top:${y}%;transform:rotate(${rot}deg);z-index:${z};`;
+
+    const img = document.createElement('img');
+    img.src = item.url;
+    img.alt = item.caption || '';
+    img.loading = 'lazy';
+
+    div.appendChild(img);
+    div.addEventListener('click', () => openModal(item));
+    collageCanvas.appendChild(div);
+  });
 }
 
 // ---------- Renderowanie siatki ----------

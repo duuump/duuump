@@ -91,6 +91,7 @@ a:hover { color: var(--accent); }
   padding: var(--pad-md);
   flex: 1;
   overflow-y: auto;
+  position: relative;
   /* Scrollbar w stylu ASCII/monospace */
   scrollbar-width: thin;
   scrollbar-color: var(--fg-subtle) transparent;
@@ -108,7 +109,7 @@ a:hover { color: var(--accent); }
   align-items: center;
   gap: var(--pad-md);
   flex-wrap: wrap;
-  height: 36px;
+  height: 44px;
 }
 
 .frame-footer a {

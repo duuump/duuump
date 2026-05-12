@@ -224,6 +224,20 @@
   color: var(--fg-muted);
   cursor: pointer;
   transition: color 0.1s;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1px;
+}
+
+.view-icon {
+  line-height: 1;
+}
+
+.view-label {
+  font-size: 9px;
+  line-height: 1;
+  letter-spacing: 0.02em;
 }
 
 .view-btn:hover {
@@ -338,6 +352,43 @@
 .grid .card-caption,
 .grid .card-author {
   display: none;
+}
+
+/* ============================================================
+   Tryb kolaż
+   ============================================================ */
+
+.frame-body.mode-collage {
+  overflow: hidden;
+  padding: 0;
+}
+
+.collage-canvas {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+}
+
+.collage-canvas[hidden] {
+  display: none;
+}
+
+.collage-item {
+  position: absolute;
+  cursor: zoom-in;
+  transition: transform 0.12s ease;
+}
+
+.collage-item:hover {
+  z-index: 999 !important;
+  transform: rotate(var(--r)) scale(1.04) !important;
+}
+
+.collage-item img {
+  display: block;
+  width: 100%;
+  height: auto;
+  box-shadow: 1px 2px 8px rgba(0, 0, 0, 0.13);
 }
 
 /* ============================================================
