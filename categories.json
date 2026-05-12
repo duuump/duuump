@@ -1,0 +1,10 @@
+[
+  { "id": "branding", "label": "branding" },
+  { "id": "typography", "label": "typography" },
+  { "id": "photography", "label": "photography" },
+  { "id": "illustration", "label": "illustration" },
+  { "id": "object", "label": "object" },
+  { "id": "music", "label": "music" },
+  { "id": "other", "label": "other" },
+  { "id": "art", "label": "art" }
+]
