@@ -301,7 +301,7 @@ function renderGrid(items) {
     if (month && month !== currentMonth) {
       currentMonth = month;
       const [year, mon] = month.split('-');
-      const label = new Date(year, mon - 1).toLocaleDateString('pl-PL', { month: 'long', year: 'numeric' });
+      const label = new Date(year, mon - 1).toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
       const divider = document.createElement('li');
       divider.className = 'month-divider';
       divider.textContent = label;

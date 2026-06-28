@@ -53,7 +53,7 @@
   margin-left: auto;
   font-family: var(--font-mono);
   font-size: 11px;
-  color: var(--fg-subtle);
+  color: #e03030;
   white-space: nowrap;
   flex-shrink: 0;
 }
@@ -412,8 +412,9 @@
 /* --- Przycisk shuffle w kolażu --- */
 .shuffle-btn {
   position: absolute;
-  bottom: var(--pad-md);
-  right: var(--pad-md);
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
   z-index: 1000;
   background: var(--bg);
   border: var(--border);
