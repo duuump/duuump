@@ -49,6 +49,15 @@
   text-underline-offset: 2px;
 }
 
+.cat-count {
+  margin-left: auto;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--fg-subtle);
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
 /* ---------- Siatka inspiracji ---------- */
 .grid {
   list-style: none;
@@ -243,36 +252,24 @@
    Tryby wyświetlania siatki
    ============================================================ */
 
-/* --- Tryb 1: Jeden obrazek na stronie --- */
-.grid.mode-single {
-  display: block;
-  max-width: 800px;
-  margin: 0 auto;
+/* --- Separator miesięcy w siatce --- */
+.month-divider {
+  grid-column: 1 / -1;
+  list-style: none;
+  padding: var(--pad-sm) 0 var(--pad-xs);
+  border-top: var(--border);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--fg-muted);
+  text-transform: lowercase;
 }
 
-.grid.mode-single .card {
-  display: block;
+.month-divider:first-child {
+  border-top: none;
+  padding-top: 0;
 }
 
-.grid.mode-single .card-image-wrapper {
-  width: 100%;
-  max-height: 70vh;
-}
-
-.grid.mode-single .card-image-wrapper img {
-  width: 100%;
-  height: auto;
-}
-
-.grid.mode-single .card-caption,
-.grid.mode-single .card-author,
-.grid.mode-single .card-date {
-  text-align: center;
-  margin-top: var(--pad-xs);
-  line-height: 1.2;
-}
-
-/* --- Tryb 2: 4 duże miniatury --- */
+/* --- Tryb 1: Duże miniatury --- */
 .grid.mode-large {
   grid-template-columns: repeat(2, 1fr);
   gap: var(--pad-md);
@@ -407,9 +404,27 @@
 
 @media (min-width: 481px) {
   .grid.mode-large .card-caption,
-  .grid.mode-large .card-author,
-  .grid.mode-single .card-caption,
-  .grid.mode-single .card-author {
-    display: block; /* Pokazuj podpisy w trybie dużym i single */
+  .grid.mode-large .card-author {
+    display: block;
   }
+}
+
+/* --- Przycisk shuffle w kolażu --- */
+.shuffle-btn {
+  position: absolute;
+  bottom: var(--pad-md);
+  right: var(--pad-md);
+  z-index: 1000;
+  background: var(--bg);
+  border: var(--border);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--fg-muted);
+  cursor: pointer;
+  padding: 4px 10px;
+  transition: color 0.1s;
+}
+
+.shuffle-btn:hover {
+  color: var(--accent);
 }

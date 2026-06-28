@@ -68,13 +68,14 @@ viewButtons.forEach(btn => {
   });
 });
 
-// Na mobile (≤480px) zawsze wymuszamy tryb 'single' — bez zapisu do localStorage
+// Na mobile (≤480px) zawsze wymuszamy tryb 'small' — bez zapisu do localStorage
 // Na desktop przywracamy zapamiętany tryb (domyślnie 'collage')
 const isMobile = window.matchMedia('(max-width: 480px)').matches;
+const savedMode = localStorage.getItem(VIEW_MODE_KEY);
 if (isMobile) {
-  setViewMode('single', false);
+  setViewMode('small', false);
 } else {
-  setViewMode(localStorage.getItem(VIEW_MODE_KEY) || 'collage', false);
+  setViewMode(savedMode === 'single' ? 'collage' : (savedMode || 'collage'), false);
 }
 
 // ---------- Dark / light mode ----------
@@ -140,6 +141,12 @@ function renderCategoryButtons() {
     categoryBar.appendChild(btn);
   });
 
+  // Licznik obrazków na końcu paska
+  const countSpan = document.createElement('span');
+  countSpan.id = 'catCount';
+  countSpan.className = 'cat-count';
+  categoryBar.appendChild(countSpan);
+
   // Obsługa kliknięć
   const catButtons = categoryBar.querySelectorAll('.cat-btn');
   catButtons.forEach((btn) => {
@@ -147,8 +154,14 @@ function renderCategoryButtons() {
       currentCategory = btn.dataset.category;
       catButtons.forEach((b) => b.classList.toggle('active', b === btn));
       renderCurrentView();
+      updateCategoryCount();
     });
   });
+}
+
+function updateCategoryCount() {
+  const countSpan = document.getElementById('catCount');
+  if (countSpan) countSpan.textContent = getFilteredItems().length + ' imgs';
 }
 
 // ---------- Wczytywanie inspiracji ----------
@@ -162,6 +175,7 @@ async function loadInspirations() {
     const data = await response.json();
     allItems = data;
     renderCurrentView();
+    updateCategoryCount();
   } catch (error) {
     console.error(error);
     emptyMessage.textContent = 'Wystąpił błąd przy wczytywaniu inspiracji.';
@@ -185,8 +199,17 @@ const COLLAGE_PALETTE = [
   '#e8c0b0', '#6b8c6b', '#c8b4a0', '#9aafb8',
 ];
 
+// Shuffle button — podpięty raz, poza renderCollage
+document.getElementById('shuffleBtn').addEventListener('click', (e) => {
+  e.stopPropagation();
+  renderCollage(getFilteredItems());
+});
+
 function renderCollage(items) {
+  // Zachowaj przycisk shuffle, wyczyść resztę
+  const shuffleBtn = document.getElementById('shuffleBtn');
   collageCanvas.innerHTML = '';
+  collageCanvas.appendChild(shuffleBtn);
   emptyMessage.hidden = true;
 
   if (!items || items.length === 0) {
@@ -271,8 +294,19 @@ function renderGrid(items) {
   const ordered = [...filtered].reverse();
 
   const fragment = document.createDocumentFragment();
+  let currentMonth = null;
 
   ordered.forEach((item) => {
+    const month = item.date ? item.date.substring(0, 7) : null;
+    if (month && month !== currentMonth) {
+      currentMonth = month;
+      const [year, mon] = month.split('-');
+      const label = new Date(year, mon - 1).toLocaleDateString('pl-PL', { month: 'long', year: 'numeric' });
+      const divider = document.createElement('li');
+      divider.className = 'month-divider';
+      divider.textContent = label;
+      fragment.appendChild(divider);
+    }
     const card = createCard(item);
     if (card) fragment.appendChild(card);
   });
